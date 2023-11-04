@@ -22,7 +22,7 @@ exports.createUser = async (req, res) => {
 exports.signIn = async (req, res) => {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
 
     if (!user)
         return res.json({
@@ -51,35 +51,38 @@ exports.signIn = async (req, res) => {
             }
         });
     }
-
-    await User.findByIdAndUpdate(user._id, {
-        tokens: [...oldTokens, { token, signedAt: Date.now().toString() }],
-    });
+    user.tokens = [...oldTokens, { token, signedAt: Date.now().toString() }];
+    user.save();
 
     const userInfo = {
         username: user.username,
         email: user.email,
     };
     res.cookie('jwt', token, {
-        httpOnly: true, // Cookie cannot be accessed through client-side scripts
-        // other options like 'secure', 'sameSite', 'expires' can be set as required
-    }).res.json({ success: true, user: userInfo, token });
+        httpOnly: true,
+    }).json({ success: true, user: userInfo, token });
 };
 
 exports.signOut = async (req, res) => {
-    if (req.headers && req.headers.authorization) {
-        const token = req.headers.authorization.split(' ')[1];
-        if (!token) {
-            return res
-                .status(401)
-                .json({ success: false, message: 'Authorization fail!' });
-        }
+    const token = req.cookies.jwt;
 
-        const tokens = req.user.tokens;
-
-        const newTokens = tokens.filter(t => t.token !== token);
-
-        await User.findByIdAndUpdate(req.user._id, { tokens: newTokens });
-        res.json({ success: true, message: 'Sign out successfully!' });
+    if (!token) {
+        return res.status(401).send('Unauthorized');
     }
+    const tokens = req.user.tokens;
+
+    const newTokens = tokens.filter(t => t.token !== token);
+
+    await User.findByIdAndUpdate(req.user._id, { tokens: newTokens });
+    res.cookie('jwt', '', { httpOnly: true, })
+        .json({ success: true, message: 'Sign out successfully!' });
+};
+
+exports.profile = async (req, res) => {
+    res.send("Logged in");
+};
+
+exports.getUsers = async (req, res) => {
+    const users = await User.find().select("username email");
+    res.json({ sucess: true, datas: users });
 };

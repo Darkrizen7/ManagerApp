@@ -14,7 +14,13 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
+        select: false,
     },
+    tokens: {
+        type: Object,
+    }
+}, {
+    strict: false,
 });
 
 userSchema.pre('save', function (next) {
@@ -25,6 +31,7 @@ userSchema.pre('save', function (next) {
             next();
         });
     }
+    next()
 });
 
 userSchema.methods.comparePassword = async function (password) {
