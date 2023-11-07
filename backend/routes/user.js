@@ -19,11 +19,14 @@ const {
 const {
     isAuth,
 } = require('../middlewares/auth');
+const {
+    isAdmin,
+} = require('../middlewares/role');
 
 router.post('/create-user', validateUserSignUp, userValidation, createUser);
 router.post('/sign-in', validateUserSignIn, userValidation, signIn);
 router.post('/sign-out', isAuth, signOut);
-router.get('/profile', isAuth, profile);
+router.get('/profile', isAuth, isAdmin, profile);
 router.get('/users', isAuth, getUsers);
 
 module.exports = router;
