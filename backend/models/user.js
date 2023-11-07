@@ -18,6 +18,9 @@ const userSchema = new mongoose.Schema({
     },
     tokens: {
         type: Object,
+    },
+    role: {
+        type: String,
     }
 }, {
     strict: false,
@@ -44,6 +47,11 @@ userSchema.methods.comparePassword = async function (password) {
         console.log('Error while comparing password!', error.message);
     }
 };
+
+userSchema.methods.isAdmin = function()
+{
+    return this.role == "admin";
+}
 
 
 userSchema.statics.isThisEmailInUse = async function (email) {
