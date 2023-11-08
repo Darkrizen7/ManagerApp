@@ -48,8 +48,7 @@ userSchema.methods.comparePassword = async function (password) {
     }
 };
 
-userSchema.methods.isAdmin = function()
-{
+userSchema.methods.isAdmin = function () {
     return this.role == "admin";
 }
 
