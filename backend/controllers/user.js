@@ -21,7 +21,6 @@ exports.createUser = async (req, res) => {
 
 exports.signIn = async (req, res) => {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email }).select("+password");
 
     if (!user)
@@ -79,6 +78,7 @@ exports.signOut = async (req, res) => {
 };
 
 exports.profile = async (req, res) => {
+    console.log("Profile");
     res.send("Logged in");
 };
 
@@ -86,3 +86,8 @@ exports.getUsers = async (req, res) => {
     const users = await User.find().select("username email");
     res.json({ sucess: true, datas: users });
 };
+
+exports.isTokenValid = async (req, res) => {
+    const { _id, username, email } = req.user;
+    res.json({ sucess: true, data: { _id, username, email } });
+}

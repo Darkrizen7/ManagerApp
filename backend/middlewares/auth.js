@@ -4,7 +4,7 @@ const User = require('../models/user');
 exports.isAuth = async (req, res, next) => {
     const token = req.cookies.jwt;
     if (!token) {
-        return res.status(401).send('Unauthorized');
+        return res.json({sucess: false, message: 'No token'});
     }
 
     try {

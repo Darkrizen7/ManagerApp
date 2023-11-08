@@ -8,6 +8,7 @@ const {
     signOut,
     profile,
     getUsers,
+    isTokenValid,
 } = require('../controllers/user');
 
 const {
@@ -23,6 +24,7 @@ const {
 router.post('/create-user', validateUserSignUp, userValidation, createUser);
 router.post('/sign-in', validateUserSignIn, userValidation, signIn);
 router.post('/sign-out', isAuth, signOut);
+router.get('/isTokenValid', isAuth, isTokenValid);
 router.get('/profile', isAuth, profile);
 router.get('/users', isAuth, getUsers);
 
