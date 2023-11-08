@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 const SignOut = ({ handle }) => {
     const handleSignOut = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:3000/sign-out', {
+            await fetch('http://localhost:3000/sign-out', {
                 credentials: 'include',
                 method: 'POST',
             });
-            const body = await response.text();
-            console.log(body);
         } catch (error) {
             console.error('Error:', error);
         }

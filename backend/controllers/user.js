@@ -56,6 +56,7 @@ exports.signIn = async (req, res) => {
     const userInfo = {
         username: user.username,
         email: user.email,
+        role: user.role,
     };
     res.cookie('jwt', token, {
         httpOnly: true,
@@ -88,6 +89,6 @@ exports.getUsers = async (req, res) => {
 };
 
 exports.isTokenValid = async (req, res) => {
-    const { _id, username, email } = req.user;
-    res.json({ sucess: true, data: { _id, username, email } });
+    const { _id, username, email, role } = req.user;
+    res.json({ sucess: true, data: { _id, username, email, role } });
 }

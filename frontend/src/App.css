@@ -14,14 +14,37 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
   display: flex;
-  flex-direction: column;
+  /* Utilisation de Flexbox pour mettre les éléments sur la même ligne */
+  justify-content: right;
+  /* Pour aligner les éléments à l'extrême gauche et à l'extrême droite */
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+nav ul li {
+  display: inline;
+  /* Pour afficher les éléments de la liste horizontalement */
+  margin-right: 20px;
+  /* Pour un espacement entre les éléments */
+}
+
+nav ul li:last-child {
+  margin-right: 0;
+  /* Aucun espacement après le dernier élément */
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #fff;
 }
 
 .App-link {
@@ -32,6 +55,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import LoginForm from './components/LoginForm.js';
-import SignOut from './components/SignOut.js';
+import Header from './components/Header.js';
 
 class App extends Component {
   constructor(props) {
@@ -20,7 +19,6 @@ class App extends Component {
       });
       const body = await response.json();
       this.setState({ user: body.data })
-      console.log(this.state.user);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -40,13 +38,9 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <h1>
-            {this.state.user ? <div>Hi {this.state.user.username} </div> : <div>Hi Stranger</div>}
-          </h1>
-          {!this.state.user && <LoginForm handle={this.handleLogin}></LoginForm>}
-          {this.state.user && <SignOut handle={this.handleLogout}></SignOut>}
+          <Header handleLogin={this.handleLogin} handleLogout={this.handleLogout} user={this.state.user}></Header>
         </header>
-      </div>
+      </div >
     );
   }
 }
