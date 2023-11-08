@@ -20,6 +20,9 @@ const {
 const {
     isAuth,
 } = require('../middlewares/auth');
+const {
+    isAdmin,
+} = require('../middlewares/role');
 
 router.post('/create-user', validateUserSignUp, userValidation, createUser);
 router.post('/sign-in', validateUserSignIn, userValidation, signIn);
