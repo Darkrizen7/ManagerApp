@@ -84,11 +84,11 @@ exports.profile = async (req, res) => {
 };
 
 exports.getUsers = async (req, res) => {
-    const users = await User.find().select("username email");
-    res.json({ sucess: true, datas: users });
+    const users = await User.find().select("username email _id");
+    res.json({ success: true, data: users });
 };
 
 exports.isTokenValid = async (req, res) => {
     const { _id, username, email, role } = req.user;
-    res.json({ sucess: true, data: { _id, username, email, role } });
+    res.json({ success: true, data: { _id, username, email, role } });
 }

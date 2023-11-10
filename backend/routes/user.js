@@ -25,10 +25,10 @@ const {
 } = require('../middlewares/role');
 
 router.post('/create-user', validateUserSignUp, userValidation, createUser);
-router.post('/sign-in', validateUserSignIn, userValidation, signIn);
-router.post('/sign-out', isAuth, signOut);
+router.post('/login', validateUserSignIn, userValidation, signIn);
+router.post('/logout', isAuth, signOut);
 router.get('/isTokenValid', isAuth, isTokenValid);
 router.get('/profile', isAuth, profile);
-router.get('/users', isAuth, getUsers);
+router.get('/', isAuth, getUsers);
 
 module.exports = router;

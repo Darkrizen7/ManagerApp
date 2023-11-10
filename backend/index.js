@@ -1,5 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 
 require('dotenv').config()
@@ -15,7 +16,9 @@ app.use(cors({
 }));
 app.use(cookieParser());
 app.use(express.json());
-app.use(userRouter);
+
+
+app.use('/users', userRouter);
 
 app.get('', (req, res) => {
     res.send("<h1> Hellooooo World </h1>");
