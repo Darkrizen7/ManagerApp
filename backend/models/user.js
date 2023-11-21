@@ -24,7 +24,15 @@ const userSchema = new mongoose.Schema({
     }
 }, {
     strict: false,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
 });
+
+userSchema.virtual('member', {
+    ref: 'Member',
+    localField: 'email',
+    foreignField: 'email',
+})
 
 userSchema.pre('save', function (next) {
     if (this.isModified('password')) {
@@ -38,13 +46,13 @@ userSchema.pre('save', function (next) {
 });
 
 userSchema.methods.comparePassword = async function (password) {
-    if (!password) throw new Error('Password is mission, can not compare!');
+    if (!password) throw new Error('No password to compare with');
 
     try {
         const result = await bcrypt.compare(password, this.password);
         return result;
     } catch (error) {
-        console.log('Error while comparing password!', error.message);
+        console.log('BCrypt ERROR:', error.message);
     }
 };
 

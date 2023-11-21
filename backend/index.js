@@ -6,7 +6,13 @@ const cors = require('cors');
 require('dotenv').config()
 require('./models/db')
 
+const { tl } = require('./utils/translator');
+
 const userRouter = require('./routes/user');
+const authRouter = require('./routes/auth');
+const listRouter = require('./routes/list');
+const memberRouter = require('./routes/member');
+const transactionRouter = require('./routes/transaction');
 
 const app = express();
 
@@ -18,12 +24,16 @@ app.use(cookieParser());
 app.use(express.json());
 
 
+app.use('/auth', authRouter);
 app.use('/users', userRouter);
+app.use('/lists', listRouter);
+app.use('/members', memberRouter);
+app.use('/transactions', transactionRouter);
 
 app.get('', (req, res) => {
     res.send("<h1> Hellooooo World </h1>");
 });
 
 app.listen(3000, () => {
-    console.log('Listening on 3000');
+    console.log(tl("listening_port:") + 3000);
 });

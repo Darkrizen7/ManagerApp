@@ -1,13 +1,10 @@
 const User = require('../models/user');
+const { tl } = require('../utils/translator');
 
 exports.isAdmin = async (req, res, next) => {
     const user = req.user;
-    if (!user) {
-        res.json({ sucess: false, message: "Not authenticated" });
-        return;
-    }
-    if (!user.isAdmin()) {
-        res.json({ sucess: false, message: "Not admin" });
+    if (!user || !user.isAdmin()) {
+        res.status(401).json({ sucess: false, message: tl("unauthorized_access") });
         return;
     }
     next();
