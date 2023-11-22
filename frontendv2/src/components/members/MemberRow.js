@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { fetchWrapper } from "lib/fetchWrapper";
 
 import { MemberRowForm } from "components";
 

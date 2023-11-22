@@ -1,26 +1,17 @@
 import { useState } from "react";
-import { fetchWrapper } from "lib/fetchWrapper";
 import { EditTransactionForm } from ".";
+import { approveTransaction } from "lib/api";
 
 const TransactionInfo = (props) => {
     const { transaction, setTransaction } = props;
 
     const [pending, setPending] = useState(false);
-    const [error, setError] = useState(null);
 
     const handleApprove = async (e) => {
         setPending(true);
-        const body = { transactionId: transaction._id };
-        const url = "http://localhost:3000/transactions/approve";
-        const res = await fetchWrapper.put({ url, body });
-        const data = await res.json();
-        if (!res.ok || !data.success) {
-            console.log(data);
-            setPending(false);
-            return;
-        }
+        const { dataTransaction } = await approveTransaction(transaction._id);
+        if (dataTransaction) setTransaction(dataTransaction);
         setPending(false);
-        setTransaction(data.transaction);
     }
     const handleEdit = (transaction) => {
         setTransaction(transaction);

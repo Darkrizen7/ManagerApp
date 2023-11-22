@@ -11,6 +11,7 @@ import { Transactions, Transaction } from 'pages/transactions';
 
 import { Home } from 'pages/home';
 import { Login } from 'pages/login';
+import { TestComponent } from 'pages/test';
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
         <AuthProvider>
           <NavBar />
           <Switch>
+            <Route path="/test" component={TestComponent} />
+
             <Route path="/members" component={GetMembers} />
 
             <Route path="/lists/get/:listId" component={List} />

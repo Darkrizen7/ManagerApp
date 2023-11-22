@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { fetchWrapper } from 'lib/fetchWrapper';
 
 import { CreateListForm, ListRow } from '.';
+import { deleteList } from 'lib/api';
 
 const ListsTable = (props) => {
     const { lists, setLists } = props;
@@ -9,15 +9,8 @@ const ListsTable = (props) => {
 
     const handleAction = async (list) => {
         setPending(true);
-
-        const { _id } = list;
-        const res = await fetchWrapper.delete({ url: "http://localhost:3000/" + "lists/remove", body: { _id } });
-        const data = await res.json();
-        if (!res.ok || !data.success) {
-            setPending(false);
-            return;
-        }
-        setLists(data.lists);
+        const { dataLists } = await deleteList(list._id)
+        if (dataLists) setLists(dataLists);
         setPending(false);
     }
     const handleAddList = (lists) => {

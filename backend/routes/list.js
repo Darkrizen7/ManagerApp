@@ -16,8 +16,7 @@ const {
 
 // Listes
 router.get('/', isAuth, get);
-
-router.post('/create', isAuth, create);
-router.delete('/remove', isAuth, remove);
+router.post('', isAuth, create);
+router.delete('/', isAuth, remove);
 
 module.exports = router;

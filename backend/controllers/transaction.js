@@ -73,6 +73,16 @@ exports.update = async (req, res) => {
         })
         return;
     }
+
+    try {
+        if (req.files) {
+            let file = req.files.file;
+            file.mv("./uploads/" + _id + "/" + file.name);
+        }
+    } catch (e) {
+        console.log(e);
+    }
+
     res.json({
         success: true,
         transaction,
@@ -80,8 +90,8 @@ exports.update = async (req, res) => {
 }
 
 exports.approve = async (req, res) => {
-    const { transactionId } = req.body;
-    const transaction = await Transaction.findByIdAndUpdate(transactionId, {
+    const { _id } = req.body;
+    const transaction = await Transaction.findByIdAndUpdate(_id, {
         approved: true, approved_by: req.user, approved_at: Date.now()
     }, { new: true });
 

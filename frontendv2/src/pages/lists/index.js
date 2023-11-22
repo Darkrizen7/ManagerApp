@@ -3,7 +3,6 @@ import './lists.css'
 import { useState, useEffect } from 'react';
 import { ListInfo, ListsTable } from 'components';
 
-import { fetchWrapper } from 'lib/fetchWrapper';
 import { fetchLists, fetchList } from 'lib/api';
 const Lists = () => {
     const [lists, setLists] = useState(null);

@@ -1,25 +1,15 @@
-import { fetchWrapper } from "lib/fetchWrapper";
 import { useHistory } from "react-router-dom";
 import { TransactionForm } from ".";
+import { createTransaction } from "lib/api";
 
 const CreateTransactionForm = (props) => {
     const { list } = props;
 
     const history = useHistory();
 
-    const handleSubmit = async (formData, setError, setPending) => {
-        setPending(true);
-        const body = formData;
-        const url = "http://localhost:3000/transactions";
-        const res = await fetchWrapper.post({ url, body });
-        const data = await res.json();
-        if (!res.ok || !data.success) {
-            setError(data.message);
-            setPending(false);
-            return;
-        }
-        history.push("/transactions/get/" + data.transaction._id);
-        setPending(false);
+    const handleSubmit = async (formData) => {
+        const { dataTransaction } = await createTransaction(formData);
+        if (dataTransaction) history.push("/transactions/get/" + dataTransaction._id);
     };
     return (
         <TransactionForm handleSubmit={handleSubmit}

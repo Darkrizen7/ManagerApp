@@ -15,7 +15,7 @@ const ListInfo = (props) => {
             setPending(false);
             return;
         }
-        setList({ ...list, members: list.members.filter(mb => mb._id != member._id) })
+        setList({ ...list, members: list.members.filter(mb => mb._id !== member._id) })
         setPending(false);
     }
 

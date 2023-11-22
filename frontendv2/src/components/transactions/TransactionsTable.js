@@ -1,26 +1,18 @@
+import { removeTransaction } from "lib/api";
 import { TransactionRow } from ".";
-import { fetchWrapper } from "lib/fetchWrapper";
 
 const TransactionsTable = (props) => {
     const { transactions, setTransactions } = props;
     const handleRemove = async (transaction, setPending) => {
         setPending(true);
-        const body = transaction;
-        const res = await fetchWrapper.delete({ url: "http://localhost:3000/transactions", body });
-        const data = await res.json();
-
-        if (!res.ok || !data.success) {
-            setPending(false);
-            return;
-        }
-
+        const removed = await removeTransaction(transaction._id);
+        if (removed) setTransactions(transactions.filter((tr) => tr._id !== transaction._id));
         setPending(false);
-        setTransactions(transactions.filter((tr) => tr._id != transaction._id));
     }
     return (
         <table>
             <thead>
-                <tr scope="row">
+                <tr>
                     <th scope="col">Liste</th>
                     <th scope="col">Nom</th>
                     <th scope="col">Description</th>

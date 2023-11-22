@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { fetchWrapper } from "lib/fetchWrapper";
 import { MembersTable } from "components";
 import { useHistory } from "react-router-dom";
 import { fetchMembers } from "lib/api";

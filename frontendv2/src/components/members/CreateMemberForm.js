@@ -1,4 +1,3 @@
-import { fetchWrapper } from "lib/fetchWrapper";
 import { MemberRowForm } from "components";
 
 const CreateMemberForm = (props) => {

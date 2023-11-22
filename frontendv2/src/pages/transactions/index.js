@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { fetchWrapper } from "lib/fetchWrapper";
 import { CreateTransactionForm, TransactionInfo, TransactionsTable } from "components";
 import { fetchTransaction, fetchTransactions } from "lib/api";
 

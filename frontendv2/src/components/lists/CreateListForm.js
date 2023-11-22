@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
-import { fetchWrapper } from 'lib/fetchWrapper';
+import { useState } from 'react';
+
+import { createList } from 'lib/api';
 
 const CreateListForm = (props) => {
     const { handleAddList } = props;
@@ -10,15 +11,8 @@ const CreateListForm = (props) => {
     const handleSubmit = async (e) => {
         setPending(true);
         e.preventDefault();
-
-        const res = await fetchWrapper.post({ url: "http://localhost:3000/" + "lists/create", body: formData });
-        const data = await res.json();
-        if (!res.ok || !data.success) {
-            setError(data.message);
-            return;
-        }
-
-        handleAddList(data.lists);
+        const { dataLists } = await createList(formData);
+        if (dataLists) handleAddList(dataLists);
         setPending(false);
     }
 

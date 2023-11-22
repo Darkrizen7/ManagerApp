@@ -15,8 +15,12 @@ function request(method) {
             ...requestArgs,
         };
         if (body) {
-            myHeaders.append('Content-Type', 'application/json');
-            requestOptions.body = JSON.stringify(body);
+            if (body instanceof FormData) {
+                requestOptions.body = body
+            } else {
+                myHeaders.append('Content-Type', 'application/json');
+                requestOptions.body = JSON.stringify(body);
+            }
         }
         return fetch(url, requestOptions);
     }
