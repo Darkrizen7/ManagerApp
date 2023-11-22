@@ -31,7 +31,7 @@ exports.remove = async (req, res) => {
 }
 
 // Get All lists
-exports.getAll = async (req, res) => {
+getAll = async (req, res) => {
     const lists = await List.find({}).populate("members").exec();
     res.json({ success: true, lists });
 };
@@ -40,6 +40,10 @@ exports.getAll = async (req, res) => {
 exports.get = async (req, res) => {
     const { _id } = req.query
     if (!_id) {
+        getAll(req, res);
+        return;
+    }
+    if (_id === "mine") {
         getForUser(req, res);
         return;
     }

@@ -6,6 +6,7 @@ const {
     create,
     remove,
     update,
+    get,
 } = require('../controllers/member');
 
 const {
@@ -13,6 +14,7 @@ const {
 } = require('../middlewares/auth');
 
 // Listes
+router.get('/', isAuth, get);
 router.post('/', isAuth, create);
 router.delete('/', isAuth, remove);
 router.put('/', isAuth, update);

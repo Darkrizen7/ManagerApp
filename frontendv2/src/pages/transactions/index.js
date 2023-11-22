@@ -2,22 +2,16 @@ import { useEffect, useState } from "react";
 
 import { fetchWrapper } from "lib/fetchWrapper";
 import { CreateTransactionForm, TransactionInfo, TransactionsTable } from "components";
+import { fetchTransaction, fetchTransactions } from "lib/api";
 
-const GetTransactions = (props) => {
+const Transactions = (props) => {
     const { list } = props.match.params;
     const [transactions, setTransactions] = useState(null);
 
     useEffect(() => {
         (async () => {
-            const url = new URL("http://localhost:3000/transactions")
-            if (list) url.searchParams.append("list", list);
-
-            const res = await fetchWrapper.get({ url });
-            const data = await res.json();
-            if (!res.ok || !data.success) {
-                return;
-            }
-            setTransactions(data.transactions);
+            const { dataTransactions } = await fetchTransactions(list);
+            if (dataTransactions) setTransactions(dataTransactions);
         })();
     }, [list]);
 
@@ -33,21 +27,14 @@ const GetTransactions = (props) => {
         </>
     );
 }
-const GetTransaction = (props) => {
+const Transaction = (props) => {
     const { transactionId } = props.match.params;
     const [transaction, setTransaction] = useState(null);
 
     useEffect(() => {
         (async () => {
-            const url = new URL("http://localhost:3000/transactions")
-            url.searchParams.append("_id", transactionId);
-
-            const res = await fetchWrapper.get({ url });
-            const data = await res.json();
-            if (!res.ok || !data.success) {
-                return;
-            }
-            setTransaction(data.transaction);
+            const { dataTransaction } = await fetchTransaction(transactionId);
+            if (dataTransaction) setTransaction(dataTransaction);
         })();
     }, [transactionId])
 
@@ -55,4 +42,4 @@ const GetTransaction = (props) => {
         <TransactionInfo transaction={transaction} setTransaction={setTransaction} />
     )
 }
-export { GetTransactions, GetTransaction };
+export { Transactions, Transaction };

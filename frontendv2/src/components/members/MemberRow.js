@@ -8,7 +8,13 @@ const MemberRow = (props) => {
     const [isEditing, setIsEditing] = useState(false);
     const [pending, setPending] = useState(false);
 
-    const handleDoubleClick = (e) => { if (e.detail === 2) setIsEditing(true) }
+    const handleDoubleClick = (e) => {
+        if (props.noedit) {
+            if (props.handleClick) props.handleClick(member);
+            return;
+        }
+        if (e.detail === 2) setIsEditing(true)
+    }
 
     const handleFormUpdate = (formData, setPending, setError) => {
         handleUpdateMember(formData, setPending, setError, setIsEditing)

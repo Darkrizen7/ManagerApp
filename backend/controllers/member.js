@@ -42,3 +42,13 @@ exports.update = async (req, res) => {
     }, { new: true });
     res.json({ success: true, member });
 }
+
+exports.get = async (req, res) => {
+    const { list, _id } = req.query;
+    const members = await Member.find(list ? { list } : null).populate("list", "name _id");
+
+    res.json({
+        success: true,
+        members
+    });
+}

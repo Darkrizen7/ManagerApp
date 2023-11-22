@@ -5,8 +5,9 @@ import 'App.css';
 import { AuthProvider } from 'hooks/AuthContext';
 import { NavBar } from 'components'
 
-import { GetLists, GetList } from 'pages/lists';
-import { GetTransactions, GetTransaction } from 'pages/transactions';
+import { GetMembers } from 'pages/members';
+import { Lists, List } from 'pages/lists';
+import { Transactions, Transaction } from 'pages/transactions';
 
 import { Home } from 'pages/home';
 import { Login } from 'pages/login';
@@ -18,14 +19,15 @@ function App() {
         <AuthProvider>
           <NavBar />
           <Switch>
+            <Route path="/members" component={GetMembers} />
 
-            <Route path="/lists/get/:listId" component={GetList} />
-            <Route path="/lists/get" component={GetList} />
-            <Route path="/lists" component={GetLists} />
+            <Route path="/lists/get/:listId" component={List} />
+            <Route path="/lists/get" component={List} />
+            <Route path="/lists" component={Lists} />
 
-            <Route path="/transactions/get/:transactionId" component={GetTransaction} />
-            <Route path="/transactions/getByList/:list" component={GetTransactions} />
-            <Route path="/transactions" component={GetTransactions} />
+            <Route path="/transactions/get/:transactionId" component={Transaction} />
+            <Route path="/transactions/getByList/:list" component={Transactions} />
+            <Route path="/transactions" component={Transactions} />
 
             <Route path="/login" component={Login} />
             <Route path="/" component={Home} />

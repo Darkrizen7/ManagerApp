@@ -4,18 +4,14 @@ import { useState, useEffect } from 'react';
 import { ListInfo, ListsTable } from 'components';
 
 import { fetchWrapper } from 'lib/fetchWrapper';
-const GetLists = () => {
+import { fetchLists, fetchList } from 'lib/api';
+const Lists = () => {
     const [lists, setLists] = useState(null);
 
     useEffect(() => {
         (async () => {
-            const res = await fetchWrapper.get({ url: "http://localhost:3000/lists" });
-            const data = await res.json();
-            if (!res.ok || !data.success) {
-                console.log(data);
-                return;
-            }
-            setLists(data.lists);
+            const { dataLists } = await fetchLists();
+            if (dataLists) setLists(dataLists);
         })();
     }, [])
 
@@ -27,21 +23,14 @@ const GetLists = () => {
     )
 }
 
-const GetList = (props) => {
+const List = (props) => {
     const _id = props.match.params.listId;
     const [list, setList] = useState(null);
 
     useEffect(() => {
         (async () => {
-            const url = new URL("http://localhost:3000/lists/get");
-            if (_id) url.searchParams.append('_id', _id);
-
-            const res = await fetchWrapper.get({ url });
-            const data = await res.json();
-
-            if (!res.ok || !data.success) {
-            }
-            setList(data.list);
+            const { dataList } = await fetchList(_id ? _id : "mine");
+            if (dataList) setList(dataList);
         })()
     }, [_id]);
 
@@ -49,4 +38,4 @@ const GetList = (props) => {
         <ListInfo list={list} setList={setList}></ListInfo>
     );
 }
-export { GetLists, GetList };
+export { Lists, List };

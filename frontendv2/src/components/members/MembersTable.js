@@ -27,10 +27,12 @@ const MembersTable = (props) => {
                                     <MemberRow key={member._id}
                                         member={member}
                                         handleUpdateMember={handleUpdateMember}
-                                        handleRemoveMember={handleRemoveMember} />
+                                        handleRemoveMember={handleRemoveMember} noedit={props.noedit} handleClick={props.handleClick} />
                                 )
                             }
-                            <CreateMemberForm handleAddMember={handleAddMember} />
+                            {!props.noedit &&
+                                <CreateMemberForm handleAddMember={handleAddMember} />
+                            }
                         </tbody>
                     </table>
                 </>
