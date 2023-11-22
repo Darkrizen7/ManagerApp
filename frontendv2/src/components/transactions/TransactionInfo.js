@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { fetchWrapper } from "lib/fetchWrapper";
+import { EditTransactionForm } from ".";
+
 const TransactionInfo = (props) => {
     const { transaction, setTransaction } = props;
+
     const [pending, setPending] = useState(false);
     const [error, setError] = useState(null);
+
     const handleApprove = async (e) => {
         setPending(true);
         const body = { transactionId: transaction._id };
@@ -12,9 +16,14 @@ const TransactionInfo = (props) => {
         const data = await res.json();
         if (!res.ok || !data.success) {
             console.log(data);
+            setPending(false);
             return;
         }
+        setPending(false);
         setTransaction(data.transaction);
+    }
+    const handleEdit = (transaction) => {
+        setTransaction(transaction);
     }
     return (
         <>
@@ -25,11 +34,12 @@ const TransactionInfo = (props) => {
                     <h2 style={{ color: (transaction.approved) ? "green" : "orange" }}>{transaction.approved ? "Approuvé" : "En cours d'approbation"}</h2>
                     <p>{transaction.desc}</p>
                     {!transaction.approved &&
-                        <button onClick={handleApprove} disable={pending}>Approuver</button>
+                        <button onClick={handleApprove} disabled={pending}>Approuver</button>
                     }
                     {transaction.approved &&
                         <p>Transaction approuvé par : {transaction.approved_by.username} à {transaction.approved_at}</p>
                     }
+                    <EditTransactionForm transaction={transaction} handleEdit={handleEdit} />
                 </>
             }
         </>

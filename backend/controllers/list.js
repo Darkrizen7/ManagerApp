@@ -15,52 +15,55 @@ exports.create = async (req, res) => {
     }
 }
 exports.remove = async (req, res) => {
-    const { name } = req.body;
+    const { _id } = req.body;
 
-    const list = await List.findOne({ name })
+    const list = await List.findById({ _id })
     if (!list) {
         res.json({ success: false, message: tl("list_not_found") })
     }
 
     await list.model('Member').deleteMany({ list: list._id });
-    await List.findOneAndDelete({ name });
+    await list.model('Transaction').deleteMany({ list: list._id });
+    await List.findByIdAndDelete({ _id });
 
-    const lists = await List.find({});
-    await lists.populate("members");
+    const lists = await List.find({}).populate("members");
     res.json({ success: true, lists });
 }
 
 // Get All lists
 exports.getAll = async (req, res) => {
     const lists = await List.find({}).populate("members").exec();
-    res.json(lists);
+    res.json({ success: true, lists });
 };
 
 // Get One list by name
 exports.get = async (req, res) => {
-    const { name } = req.params
-    const list = await List.findOne({ name }).exec();
-    if (!list) {
-        res.json({ success: false, message: tl("list_not_found:") + name });
+    const { _id } = req.query
+    if (!_id) {
+        getForUser(req, res);
         return;
     }
-    await list.fullPopulate();
-    res.json({ success: true, list });
+    try {
+        const list = await List.findById({ _id });
+        if (!list) {
+            res.json({ success: false, message: tl("list_not_found") });
+            return;
+        }
+        await list.fullPopulate();
+        res.json({ success: true, list });
+    } catch (e) {
+        res.json({ success: false, error: e, message: e.message });
+    }
 };
 
 // Get the list of the authed user
-exports.getForUser = async (req, res) => {
+const getForUser = async (req, res) => {
     const { email } = req.user;
     const member = await Member.findOne({ email });
     if (!member) {
         res.json({ success: false, message: tl("user_has_no_list") });
         return;
     }
-    await member.populate('list');
-    if (!member.list) {
-        res.json({ success: false, message: tl("user_has_no_list") });
-        return;
-    }
-    req.params.name = member.list.name;
+    req.query._id = member.list._id;
     exports.get(req, res);
 }

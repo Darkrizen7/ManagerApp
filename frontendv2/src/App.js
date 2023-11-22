@@ -19,7 +19,7 @@ function App() {
           <NavBar />
           <Switch>
 
-            <Route path="/lists/get/:listName" component={GetList} />
+            <Route path="/lists/get/:listId" component={GetList} />
             <Route path="/lists/get" component={GetList} />
             <Route path="/lists" component={GetLists} />
 

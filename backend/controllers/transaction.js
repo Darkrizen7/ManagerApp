@@ -1,26 +1,22 @@
 const Transaction = require('../models/transaction');
 const { tl } = require('../utils/translator');
 
-exports.getByList = async (req, res) => {
-    const { list } = req.params;
-    const transactions = await Transaction.find({ list }).populate("list", "name _id");
-
-    res.json({
-        success: true,
-        transactions
-    })
-}
-exports.getAll = async (req, res) => {
-    const transactions = await Transaction.find().populate("list", "name _id");
+exports.get = async (req, res) => {
+    const { list, _id } = req.query;
+    if (_id) {
+        exports.getTransaction(req, res);
+        return;
+    }
+    const transactions = await Transaction.find(list ? { list } : null).populate("list", "name _id");
 
     res.json({
         success: true,
         transactions
     });
 }
-exports.get = async (req, res) => {
-    const { transactionId } = req.params;
-    const transaction = await Transaction.findById(transactionId);
+exports.getTransaction = async (req, res) => {
+    const { _id } = req.query;
+    const transaction = await Transaction.findById(_id);
 
     if (!transaction) {
         res.json({
@@ -58,19 +54,18 @@ exports.create = async (req, res) => {
 }
 
 exports.remove = async (req, res) => {
-    const { transactionId } = req.body;
-    await Transaction.findByIdAndRemove(transactionId);
+    const { _id } = req.body;
+    await Transaction.findByIdAndRemove(_id);
     res.json({
         success: true,
     })
 }
 
 exports.update = async (req, res) => {
-    const { transactionId, name, desc, amount } = req.body;
-    const transaction = Transaction.findByIdAndUpdate(transactionId, {
+    const { _id, name, desc, amount } = req.body;
+    const transaction = await Transaction.findByIdAndUpdate(_id, {
         name, desc, amount, approved: false, approved_by: null, approved_at: null
     }, { new: true });
-
     if (!transaction) {
         res.json({
             success: false,

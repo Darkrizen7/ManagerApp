@@ -16,13 +16,11 @@ const {
     isAuth,
 } = require('../middlewares/auth');
 
-router.get('/get/:transactionId', isAuth, get);
-router.get('/getByList/:list', isAuth, getByList);
-router.get('/', isAuth, getAll);
+router.get('/', isAuth, get);
+router.post('/', isAuth, create);
+router.delete('/', isAuth, remove);
+router.put('/', isAuth, update);
 
-router.post('/create', isAuth, create);
-router.delete('/remove', isAuth, remove);
-router.put('/update', isAuth, update);
 router.put('/approve', isAuth, approve);
 
 module.exports = router;

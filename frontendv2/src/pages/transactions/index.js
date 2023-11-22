@@ -9,8 +9,9 @@ const GetTransactions = (props) => {
 
     useEffect(() => {
         (async () => {
-            const url = "http://localhost:3000/transactions/" + (list ? ("getByList/" + list) : "");
-            console.log(url);
+            const url = new URL("http://localhost:3000/transactions")
+            if (list) url.searchParams.append("list", list);
+
             const res = await fetchWrapper.get({ url });
             const data = await res.json();
             if (!res.ok || !data.success) {
@@ -18,12 +19,12 @@ const GetTransactions = (props) => {
             }
             setTransactions(data.transactions);
         })();
-    }, [list])
+    }, [list]);
 
     return (
         <>
             {transactions &&
-                <TransactionsTable transactions={transactions}></TransactionsTable>
+                <TransactionsTable transactions={transactions} setTransactions={setTransactions}></TransactionsTable>
             }
             <br />
             {list &&
@@ -38,7 +39,9 @@ const GetTransaction = (props) => {
 
     useEffect(() => {
         (async () => {
-            const url = "http://localhost:3000/transactions/get/" + transactionId;
+            const url = new URL("http://localhost:3000/transactions")
+            url.searchParams.append("_id", transactionId);
+
             const res = await fetchWrapper.get({ url });
             const data = await res.json();
             if (!res.ok || !data.success) {
