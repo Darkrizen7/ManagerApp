@@ -11,7 +11,7 @@ exports.create = async (req, res) => {
         const lists = await List.find({}).populate("members");
         res.json({ success: true, lists });
     } catch (e) {
-        res.json({ success: false, message: e.message })
+        res.json({ success: false, error: e, message: e.message })
     }
 }
 exports.remove = async (req, res) => {
@@ -66,11 +66,15 @@ exports.get = async (req, res) => {
 // Get the list of the authed user
 const getForUser = async (req, res) => {
     const { email } = req.user;
-    const member = await Member.findOne({ email });
-    if (!member) {
-        res.json({ success: false, message: tl("user_has_no_list") });
-        return;
+    try {
+        const member = await Member.findOne({ email });
+        if (!member) {
+            res.json({ success: false, message: tl("user_has_no_list") });
+            return;
+        }
+        req.query._id = member.list._id;
+        exports.get(req, res);
+    } catch (e) {
+        res.json({ success: false, error: e, message: e.message });
     }
-    req.query._id = member.list._id;
-    exports.get(req, res);
 }

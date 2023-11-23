@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { EditTransactionForm } from ".";
 import { approveTransaction } from "lib/api";
+import { ImageFetch } from "components/ImageFetch";
 
 const TransactionInfo = (props) => {
     const { transaction, setTransaction } = props;
@@ -24,6 +25,7 @@ const TransactionInfo = (props) => {
                     <h2 style={{ color: (transaction.amount > 0) ? "green" : "red" }}>Montant :{transaction.amount}€</h2>
                     <h2 style={{ color: (transaction.approved) ? "green" : "orange" }}>{transaction.approved ? "Approuvé" : "En cours d'approbation"}</h2>
                     <p>{transaction.desc}</p>
+                    <ImageFetch api_path="transactions/proof" params={{ _id: transaction._id }}></ImageFetch>
                     {!transaction.approved &&
                         <button onClick={handleApprove} disabled={pending}>Approuver</button>
                     }

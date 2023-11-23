@@ -6,25 +6,28 @@ const { tl } = require('../utils/translator');
 
 exports.register = async (req, res) => {
     const { username, email, password } = req.body;
+    try {
+        const isNewUser = await User.isThisEmailInUse(email);
+        if (!isNewUser)
+            return res.status(401).json({
+                success: false,
+                message: tl("email_already_used"),
+            });
 
-    const isNewUser = await User.isThisEmailInUse(email);
-    if (!isNewUser)
-        return res.status(401).json({
-            success: false,
-            message: tl("email_already_used"),
+        const user = await User({
+            username,
+            email,
+            password,
         });
+        await user.save();
 
-    const user = await User({
-        username,
-        email,
-        password,
-    });
-    await user.save();
-
-    res.json({
-        success: true,
-        user: { email: user.email, username: user.username },
-    });
+        res.json({
+            success: true,
+            user: { email: user.email, username: user.username },
+        });
+    } catch (e) {
+        res.json({ success: false, error: e, message: e.message })
+    }
 };
 
 exports.login = async (req, res) => {
@@ -78,9 +81,12 @@ exports.logout = async (req, res) => {
     const tokens = req.user.tokens;
 
     const newTokens = tokens.filter(t => t.token !== token);
-
-    await User.findByIdAndUpdate(req.user._id, { tokens: newTokens });
-    res.json({ success: true, message: tl("logout_success") });
+    try {
+        await User.findByIdAndUpdate(req.user._id, { tokens: newTokens });
+        res.json({ success: true, message: tl("logout_success") });
+    } catch (e) {
+        res.json({ success: false, error: e, message: e.message })
+    }
 };
 
 exports.checkToken = async (req, res) => {

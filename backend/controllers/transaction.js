@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const Transaction = require('../models/transaction');
 const { tl } = require('../utils/translator');
 
@@ -7,31 +9,45 @@ exports.get = async (req, res) => {
         exports.getTransaction(req, res);
         return;
     }
-    const transactions = await Transaction.find(list ? { list } : null).populate("list", "name _id");
 
-    res.json({
-        success: true,
-        transactions
-    });
+    try {
+        const transactions = await Transaction.find(list ? { list } : null).populate("list", "name _id");
+
+        res.json({
+            success: true,
+            transactions
+        });
+    } catch (e) {
+        res.json({
+            success: false,
+            error: e,
+            message: e.message
+        })
+    }
 }
 exports.getTransaction = async (req, res) => {
     const { _id } = req.query;
-    const transaction = await Transaction.findById(_id);
+    try {
+        const transaction = await Transaction.findById(_id);
 
-    if (!transaction) {
+        if (!transaction) {
+            res.json({
+                success: false,
+                message: tl("transaction_not_found")
+            })
+            return;
+        }
+
+        await transaction.populate("list", "list.name list._id");
+        await transaction.populate("approved_by");
+
         res.json({
-            success: false,
-            message: tl("transaction_not_found")
-        })
-        return;
+            success: true,
+            transaction,
+        });
+    } catch (e) {
+        res.json({ success: false, error: e, message: e.message })
     }
-
-    await transaction.populate("list", "list.name list._id");
-    await transaction.populate("approved_by");
-    res.json({
-        success: true,
-        transaction,
-    });
 }
 
 exports.create = async (req, res) => {
@@ -55,58 +71,89 @@ exports.create = async (req, res) => {
 
 exports.remove = async (req, res) => {
     const { _id } = req.body;
-    await Transaction.findByIdAndRemove(_id);
-    res.json({
-        success: true,
-    })
+    try {
+        await Transaction.findByIdAndRemove(_id);
+        res.json({
+            success: true,
+        })
+    } catch (e) {
+        res.json({ success: false, error: e, message: e.message })
+    }
 }
 
 exports.update = async (req, res) => {
     const { _id, name, desc, amount } = req.body;
-    const transaction = await Transaction.findByIdAndUpdate(_id, {
-        name, desc, amount, approved: false, approved_by: null, approved_at: null
-    }, { new: true });
-    if (!transaction) {
+    try {
+        const transaction = await Transaction.findByIdAndUpdate(_id, {
+            name, desc, amount, approved: false, approved_by: null, approved_at: null
+        }, { new: true });
+        if (!transaction) {
+            res.json({
+                success: false,
+                message: tl("transaction_not_found")
+            })
+            return;
+        }
+
+        try {
+            if (req.files) {
+                let file = req.files.file;
+                file.mv("./uploads/" + _id + "/proof.jpg");
+            }
+        } catch (e) {
+            console.log(e);
+        }
+
+        res.json({
+            success: true,
+            transaction,
+        })
+    } catch (e) {
         res.json({
             success: false,
-            message: tl("transaction_not_found")
+            error: e,
+            message: e.message
         })
-        return;
     }
-
-    try {
-        if (req.files) {
-            let file = req.files.file;
-            file.mv("./uploads/" + _id + "/" + file.name);
-        }
-    } catch (e) {
-        console.log(e);
-    }
-
-    res.json({
-        success: true,
-        transaction,
-    })
 }
 
 exports.approve = async (req, res) => {
     const { _id } = req.body;
-    const transaction = await Transaction.findByIdAndUpdate(_id, {
-        approved: true, approved_by: req.user, approved_at: Date.now()
-    }, { new: true });
+    try {
+        const transaction = await Transaction.findByIdAndUpdate(_id, {
+            approved: true, approved_by: req.user, approved_at: Date.now()
+        }, { new: true });
 
-    if (!transaction) {
+        if (!transaction) {
+            res.json({
+                success: false,
+                message: tl("transaction_not_found")
+            })
+            return;
+        }
+
+        await transaction.populate("list", "list.name list._id");
+        await transaction.populate("approved_by");
+        res.json({
+            success: true,
+            transaction,
+        });
+    } catch (e) {
         res.json({
             success: false,
-            message: tl("transaction_not_found")
+            error: e,
+            message: e.message
         })
-        return;
     }
-
-    await transaction.populate("list", "list.name list._id");
-    await transaction.populate("approved_by");
-    res.json({
-        success: true,
-        transaction,
-    });
 }
+
+exports.getProof = async (req, res) => {
+    const { _id } = req.query;
+    try {
+        const imagePath = path.join(__dirname, "..", "uploads", _id, "proof.jpg");
+        res.sendFile(imagePath, {}, err => {
+        });
+    } catch (e) {
+        res.status(400).json({ success: false });
+    }
+};

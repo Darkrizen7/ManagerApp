@@ -35,20 +35,28 @@ exports.remove = async (req, res) => {
 //Update a member from a list
 exports.update = async (req, res) => {
     const { _id, surname, lastname, student_number, email, support, list } = req.body;
-    const member = await Member.findByIdAndUpdate(_id, {
-        $set: {
-            surname, lastname, student_number, email, support
-        }
-    }, { new: true });
-    res.json({ success: true, member });
+    try {
+        const member = await Member.findByIdAndUpdate(_id, {
+            $set: {
+                surname, lastname, student_number, email, support
+            }
+        }, { new: true });
+        res.json({ success: true, member });
+    } catch (e) {
+        res.json({ success: false, error: e, message: e.message });
+    }
 }
 
 exports.get = async (req, res) => {
     const { list, _id } = req.query;
-    const members = await Member.find(list ? { list } : null).populate("list", "name _id");
+    try {
+        const members = await Member.find(list ? { list } : null).populate("list", "name _id");
+        res.json({
+            success: true,
+            members
+        });
+    } catch (e) {
+        res.json({ success: false, error: e, message: e.message });
 
-    res.json({
-        success: true,
-        members
-    });
+    }
 }
