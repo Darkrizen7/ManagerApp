@@ -17,7 +17,7 @@ const GetMembers = () => {
             const { dataMembers } = await fetchMembers();
             if (dataMembers) setMembers(dataMembers);
         })()
-    })
+    }, [])
     const handleClick = (member) => {
         history.push("/lists/get/" + member.list._id);
     }

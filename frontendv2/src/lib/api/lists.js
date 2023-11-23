@@ -10,7 +10,7 @@ const fetchList = async (_id) => {
     const url = new URL(API_URL + "lists");
     url.searchParams.append('_id', _id);
     const { data, error } = await fetchAPIWithFormData(url, "get")
-    return { dataList: data.list ? data.list : null, error }
+    return { dataList: data ? data.list : null, error }
 }
 
 const createList = async (formData) => {

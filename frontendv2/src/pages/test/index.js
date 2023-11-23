@@ -1,4 +1,5 @@
 import { useForm } from 'react-hook-form';
+import { PermProtect } from 'hooks/PermContext';
 
 const TestComponent = () => {
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
@@ -15,11 +16,13 @@ const TestComponent = () => {
         }).then((res) => res.json());
     }
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <input {...register("_id")} />
-            <input type="file" {...register("file")} />
-            <button>Submit</button>
-        </form>
+        <PermProtect noshow="true" access="test">
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <input {...register("_id")} />
+                <input type="file" {...register("file")} />
+                <button>Submit</button>
+            </form>
+        </PermProtect>
     );
 }
 export { TestComponent }

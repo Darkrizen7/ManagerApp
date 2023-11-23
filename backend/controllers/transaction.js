@@ -56,6 +56,16 @@ exports.create = async (req, res) => {
     try {
         const transaction = await Transaction({ name, desc, amount, list, user: req.user });
         await transaction.save();
+
+        try {
+            if (req.files) {
+                let file = req.files.file;
+                file.mv("./uploads/" + transaction._id + "/proof.jpg");
+            }
+        } catch (e) {
+            console.log(e);
+        }
+
         res.json({
             success: true,
             transaction,
@@ -103,6 +113,7 @@ exports.update = async (req, res) => {
         } catch (e) {
             console.log(e);
         }
+        await transaction.populate("list", "list.name list._id");
 
         res.json({
             success: true,

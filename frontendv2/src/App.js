@@ -12,29 +12,32 @@ import { Transactions, Transaction } from 'pages/transactions';
 import { Home } from 'pages/home';
 import { Login } from 'pages/login';
 import { TestComponent } from 'pages/test';
+import { PermProvider } from 'hooks/PermContext';
 
 function App() {
   return (
     <Router>
       <div className="App">
         <AuthProvider>
-          <NavBar />
-          <Switch>
-            <Route path="/test" component={TestComponent} />
+          <PermProvider>
+            <NavBar />
+            <Switch>
+              <Route path="/test" component={TestComponent} />
 
-            <Route path="/members" component={GetMembers} />
+              <Route path="/members" component={GetMembers} />
 
-            <Route path="/lists/get/:listId" component={List} />
-            <Route path="/lists/get" component={List} />
-            <Route path="/lists" component={Lists} />
+              <Route path="/lists/get/:listId" component={List} />
+              <Route path="/lists/get" component={List} />
+              <Route path="/lists" component={Lists} />
 
-            <Route path="/transactions/get/:transactionId" component={Transaction} />
-            <Route path="/transactions/getByList/:list" component={Transactions} />
-            <Route path="/transactions" component={Transactions} />
+              <Route path="/transactions/get/:transactionId" component={Transaction} />
+              <Route path="/transactions/getByList/:list" component={Transactions} />
+              <Route path="/transactions" component={Transactions} />
 
-            <Route path="/login" component={Login} />
-            <Route path="/" component={Home} />
-          </Switch>
+              <Route path="/login" component={Login} />
+              <Route path="/" component={Home} />
+            </Switch>
+          </PermProvider>
         </AuthProvider>
       </div >
     </Router>

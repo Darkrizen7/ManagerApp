@@ -1,7 +1,9 @@
 import { MemberRow, CreateMemberForm } from "components";
+import { PermProtect, usePerm } from 'hooks/PermContext';
 
 const MembersTable = (props) => {
-    const { members } = props;
+    const { members, list } = props;
+    const { hasAccess } = usePerm();
     const { handleUpdateMember, handleRemoveMember, handleAddMember } = props.handles;
 
     return (
@@ -27,11 +29,13 @@ const MembersTable = (props) => {
                                     <MemberRow key={member._id}
                                         member={member}
                                         handleUpdateMember={handleUpdateMember}
-                                        handleRemoveMember={handleRemoveMember} noedit={props.noedit} handleClick={props.handleClick} />
+                                        handleRemoveMember={handleRemoveMember} noedit={props.noedit || !hasAccess("members.update", list ? list._id : null)} handleClick={props.handleClick} />
                                 )
                             }
                             {!props.noedit &&
-                                <CreateMemberForm handleAddMember={handleAddMember} />
+                                <PermProtect access="members.create" listId={list ? list._id : null} noshow="true">
+                                    <CreateMemberForm handleAddMember={handleAddMember} />
+                                </PermProtect>
                             }
                         </tbody>
                     </table>

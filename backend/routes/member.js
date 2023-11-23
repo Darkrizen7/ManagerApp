@@ -7,6 +7,7 @@ const {
     remove,
     update,
     get,
+    getForUser,
 } = require('../controllers/member');
 
 const {
@@ -19,4 +20,5 @@ router.post('/', isAuth, create);
 router.delete('/', isAuth, remove);
 router.put('/', isAuth, update);
 
+router.get('/user', isAuth, getForUser);
 module.exports = router;

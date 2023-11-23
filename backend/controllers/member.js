@@ -16,7 +16,7 @@ exports.create = async (req, res) => {
         await member.save();
         res.json({ success: true, member });
     } catch (e) {
-        res.json({ success: false, message: e.message })
+        res.json({ success: false, error: e, message: e.message })
     }
 }
 
@@ -58,5 +58,16 @@ exports.get = async (req, res) => {
     } catch (e) {
         res.json({ success: false, error: e, message: e.message });
 
+    }
+}
+
+exports.getForUser = async (req, res) => {
+    const { email } = req.user;
+    try {
+        const member = await Member.findOne({ email }).populate("list", "name _id");
+        if (!member) { res.json({ success: false, message: tl("member_not_found") }); return; }
+        res.json({ success: true, member });
+    } catch (e) {
+        res.json({ success: false, error: e, message: e.message });
     }
 }

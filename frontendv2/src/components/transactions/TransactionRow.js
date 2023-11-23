@@ -1,5 +1,6 @@
 import { useHistory } from "react-router-dom";
 import { useState } from "react";
+import { PermProtect } from "hooks/PermContext";
 
 const TransactionRow = (props) => {
     const { transaction, handleRemove } = props;
@@ -23,7 +24,9 @@ const TransactionRow = (props) => {
             <td onClick={handleClick} style={{ color: (transaction.amount > 0) ? "green" : "red" }}>{transaction.amount}€</td>
             <td onClick={handleClick} style={{ color: transaction.approved ? "green" : "red" }}>{transaction.approved ? "Oui" : "Non"}</td>
             <td>
-                <button className="submit" type="submit" disabled={pending} onClick={handleAction}>Retirer</button>
+                <PermProtect access={"transactions.delete"} listId={transaction.list._id} noshow={true}>
+                    <button className="submit" type="submit" disabled={pending} onClick={handleAction}>Retirer</button>
+                </PermProtect>
             </td>
         </tr>
     );

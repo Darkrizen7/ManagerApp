@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { MemberRowForm } from "components";
+import { PermProtect } from "hooks/PermContext";
 
 const MemberRow = (props) => {
     const { member, handleUpdateMember, handleRemoveMember } = props;
@@ -32,10 +33,12 @@ const MemberRow = (props) => {
                     <td onClick={handleDoubleClick}>{(member.support) ? "Oui" : "Non"}</td>
                     <td onClick={handleDoubleClick}>{member.role}</td>
                     <td>
-                        <button className="submit"
-                            type="submit"
-                            disabled={pending}
-                            onClick={() => { handleRemoveMember(member, setPending) }}>Retirer</button>
+                        <PermProtect access={"members.delete"} listId={member.list} noshow={true}>
+                            <button className="submit"
+                                type="submit"
+                                disabled={pending}
+                                onClick={() => { handleRemoveMember(member, setPending) }}>Retirer</button>
+                        </PermProtect>
                     </td>
                 </tr>
             }

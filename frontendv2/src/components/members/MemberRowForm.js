@@ -4,7 +4,14 @@ const MemberRowForm = (props) => {
     const { _id, surname, lastname, student_number, email, support, role, list } = props.member;
     const { handleAction, actionText } = props;
 
-    const [formData, setFormData] = useState({ _id, surname, lastname, student_number, email, support, role, list });
+    const [formData, setFormData] = useState({
+        _id: _id ? _id : "",
+        surname: surname ? surname : "",
+        lastname: lastname ? lastname : "",
+        student_number: student_number ? student_number : "",
+        email: email ? email : "",
+        support, role, list
+    });
     const [error, setError] = useState(null);
     const [pending, setPending] = useState(false);
 

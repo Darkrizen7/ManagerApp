@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { ListInfo, ListsTable } from 'components';
 
 import { fetchLists, fetchList } from 'lib/api';
+import { PermProtect, usePerm } from 'hooks/PermContext';
 const Lists = () => {
     const [lists, setLists] = useState(null);
 
@@ -17,13 +18,16 @@ const Lists = () => {
     return (
         <>
             <h1>Toutes les listes</h1>
-            <ListsTable lists={lists} setLists={setLists} />
+            <PermProtect access="lists.read">
+                <ListsTable lists={lists} setLists={setLists} />
+            </PermProtect>
         </>
     )
 }
 
 const List = (props) => {
     const _id = props.match.params.listId;
+    const { userMember } = usePerm();
     const [list, setList] = useState(null);
 
     useEffect(() => {
@@ -34,7 +38,9 @@ const List = (props) => {
     }, [_id]);
 
     return (
-        <ListInfo list={list} setList={setList}></ListInfo>
+        <PermProtect access="lists.readOne" listId={_id ? _id : (userMember ? userMember.list._id : null)}>
+            <ListInfo list={list} setList={setList}></ListInfo>
+        </PermProtect>
     );
 }
 export { Lists, List };

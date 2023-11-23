@@ -1,61 +1,45 @@
 import { Link } from "react-router-dom";
 
 import { MembersTable } from "components";
-import { fetchWrapper } from "lib/fetchWrapper";
+import { createMember, removeMember, updateMember } from "lib/api";
+import { PermProtect, usePerm } from "hooks/PermContext";
 const ListInfo = (props) => {
     const { list, setList } = props;
-
+    const { hasAccess } = usePerm();
     const handleRemoveMember = async (member, setPending) => {
+        if (!hasAccess("members.delete", list._id)) { alert("Accès interdit"); return; }
         setPending(true);
-        const body = member;
-        const res = await fetchWrapper.delete({ url: "http://localhost:3000/members", body });
-        const data = await res.json();
-
-        if (!res.ok || !data.success) {
-            setPending(false);
-            return;
-        }
-        setList({ ...list, members: list.members.filter(mb => mb._id !== member._id) })
-        setPending(false);
+        const { error } = await removeMember(member);
+        if (!error) setList({ ...list, members: list.members.filter(mb => mb._id !== member._id) })
+        setPending(false)
     }
 
     const handleAddMember = async (formData, setPending) => {
+        if (!hasAccess("members.create", list._id)) return;
         setPending(true);
-        const body = formData;
-        body.list = list._id;
-
-        const res = await fetchWrapper.post({ url: "http://localhost:3000/members", body });
-        const data = await res.json();
-
-        if (!res.ok || !data.success) {
+        formData.list = list._id;
+        const { dataMember, error } = await createMember(formData);
+        if (error) {
             setPending(false);
             return;
+        } else if (dataMember) {
+            const members = list.members;
+            members.push(dataMember);
+            setList({ ...list, members })
+            setPending(false);
         }
-        const members = list.members;
-        members.push(data.member);
-
-        setList({ ...list, members })
-        setPending(false);
     }
 
     const handleUpdateMember = async (formData, setPending, setError, setIsEditing) => {
+        if (!hasAccess("members.update", list._id)) return;
         setPending(true);
-
-        const body = formData;
-        const res = await fetchWrapper.put({ url: "http://localhost:3000/members", body });
-        const data = await res.json();
-
-        if (!res.ok || !data.success) {
-            setError(data.message);
-            setPending(false);
-            return;
-        }
-
+        const { dataMember, error } = await updateMember(formData);
         setPending(false);
         setIsEditing(false);
+        if (error || !dataMember) return;
         setList({
             ...list, members: list.members.map((mb) => {
-                return (mb._id === formData._id) ? data.member : mb
+                return (mb._id === formData._id) ? dataMember : mb
             })
         })
 
@@ -65,9 +49,14 @@ const ListInfo = (props) => {
             {list &&
                 <>
                     <h1>{list.name}</h1>
-                    {list.account} €
-                    <Link to={"/transactions/getByList/" + list._id}>Transactions</Link>
-                    <MembersTable handles={{ handleUpdateMember, handleAddMember, handleRemoveMember }} members={list.members} />
+                    <PermProtect access="transactions.read" listId={list._id} noshow={true}>
+                        {list.account} €
+                        <Link to={"/transactions/getByList/" + list._id}>Transactions</Link>
+                    </PermProtect>
+                    <PermProtect access="members.read" listId={list._id} noshow={true}>
+                        <MembersTable handles={{ handleUpdateMember, handleAddMember, handleRemoveMember }} list={list} members={list.members} />
+                    </PermProtect>
+
                 </>
             }
         </>

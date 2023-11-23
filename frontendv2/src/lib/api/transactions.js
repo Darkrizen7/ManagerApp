@@ -35,7 +35,9 @@ const updateTransaction = async (formData) => {
 }
 
 const createTransaction = async (formData) => {
-    const { data, error } = await fetchAPIWithData("transactions", "post", formData);
+    const { url, fData } = createFormDataAndURL("transactions", formData);
+    fData.set("file", formData.file[0]);
+    const { data, error } = await fetchAPIWithFormData(url, "post", fData);
     return { dataTransaction: data.transaction, error };
 }
 export { fetchTransaction, fetchTransactions, removeTransaction, approveTransaction, updateTransaction, createTransaction }
