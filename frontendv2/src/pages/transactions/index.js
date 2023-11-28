@@ -17,16 +17,18 @@ const Transactions = (props) => {
     }, [list]);
 
     return (
-        <PermProtect access="transactions.read" listId={list}>
-            {transactions &&
-                <TransactionsTable transactions={transactions} setTransactions={setTransactions}></TransactionsTable>
-            }
-            <br />
-            {list && hasAccess("transactions.create", list) &&
-                < CreateTransactionForm list={list}></CreateTransactionForm>
-            }
-        </PermProtect >
-
+        <>
+            <h1>Transactions</h1>
+            <PermProtect access="transactions.read" listId={list}>
+                {transactions &&
+                    <TransactionsTable transactions={transactions} setTransactions={setTransactions}></TransactionsTable>
+                }
+                <br />
+                {list && hasAccess("transactions.create", list) &&
+                    < CreateTransactionForm list={list}></CreateTransactionForm>
+                }
+            </PermProtect >
+        </>
     );
 }
 const Transaction = (props) => {
@@ -44,7 +46,9 @@ const Transaction = (props) => {
     return (
         <>
             {transaction && hasAccess("transactions.read", transaction.list._id) &&
-                <TransactionInfo transaction={transaction} setTransaction={setTransaction} />
+                <>
+                    <TransactionInfo transaction={transaction} setTransaction={setTransaction} />
+                </>
             }
         </>
     )

@@ -1,45 +1,64 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-import { CreateListForm, ListRow } from '.';
-import { deleteList } from 'lib/api';
+import { PermProtect } from 'hooks/PermContext';
+import { Table } from 'components';
+import { useHistory } from 'react-router-dom';
 
 const ListsTable = (props) => {
-    const { lists, setLists } = props;
-    const [pending, setPending] = useState(false);
+    const { lists } = props;
+    const { handleRemoveList } = props.handles;
+    const history = useHistory();
+    const goToList = (list) => {
+        history.push("/lists/get/" + list._id)
+    }
+    const columns = [
+        {
+            header: 'Infos',
+            columns: [
+                { accessorKey: 'name', header: 'Nom' },
+                { accessorKey: 'campagne', header: 'Campagne' },
+            ],
+        },
+        {
+            header: 'Membres',
+            columns: [
+                { accessorKey: 'members', enableColumnFilter: false, id: 'members_total', header: "Total", cell: info => (info.getValue().length) },
+                { accessorKey: 'members', enableColumnFilter: false, id: 'members', header: "Membre", cell: info => (info.getValue().filter(member => (!member.support)).length) },
+                { accessorKey: 'members', enableColumnFilter: false, id: 'members_support', header: "Soutiens", cell: info => (info.getValue().filter(member => (member.support)).length) },
+            ],
+        },
+        {
+            header: 'Actions',
+            cell: info => {
+                return (
+                    <>
+                        <PermProtect access={"lists.readOne"} listId={info.row.original._id} noshow={true}>
+                            <button className="submit"
+                                type="submit"
+                                onClick={() => { goToList(info.row.original) }}>Voir</button>
+                        </PermProtect>
+                        <PermProtect access={"lists.delete"} listId={info.row.original._id} noshow={true}>
+                            <button className="submit"
+                                type="submit"
+                                onClick={() => { handleRemoveList(info.row.original) }}>Retirer</button>
+                        </PermProtect>
+                    </>
+                );
+            },
+        }
+    ]
+    const [data, setData] = useState([]);
 
-    const handleAction = async (list) => {
-        setPending(true);
-        const { dataLists } = await deleteList(list._id)
-        if (dataLists) setLists(dataLists);
-        setPending(false);
-    }
-    const handleAddList = (lists) => {
-        setLists(lists);
-    }
+    useEffect(() => {
+        if (!lists) return;
+        setData(lists);
+    }, [lists]);
+
     return (
         <>
-            {lists && lists.length &&
-                < table >
-                    <thead>
-                        <tr>
-                            <th scope="col">Liste</th>
-                            <th scope="col">Campagne</th>
-                            <th scope="col" className='memberCount'>Nombre</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            lists.map(list =>
-                                <ListRow key={list._id} pending={pending} handleAction={handleAction} list={list}></ListRow>
-                            )
-                        }
-                        <CreateListForm handleAddList={handleAddList} />
-                    </tbody>
-                </table>
-            }
-            {!lists && "Loading lists"}
+            <Table columns={columns} data={data} />
         </>
-    )
-}
+    );
+};
+
 export { ListsTable };

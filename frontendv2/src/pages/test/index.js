@@ -16,7 +16,7 @@ const TestComponent = () => {
         }).then((res) => res.json());
     }
     return (
-        <PermProtect noshow="true" access="test">
+        <PermProtect noshow="true" access="navbar.admin">
             <form onSubmit={handleSubmit(onSubmit)}>
                 <input {...register("_id")} />
                 <input type="file" {...register("file")} />

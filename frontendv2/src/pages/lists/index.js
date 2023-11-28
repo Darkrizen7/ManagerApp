@@ -1,10 +1,11 @@
 import './lists.css'
 
 import { useState, useEffect } from 'react';
-import { ListInfo, ListsTable } from 'components';
+import { CreateListForm, ListInfo, ListsTable } from 'components';
 
-import { fetchLists, fetchList } from 'lib/api';
+import { fetchLists, fetchList, deleteList, createList } from 'lib/api';
 import { PermProtect, usePerm } from 'hooks/PermContext';
+
 const Lists = () => {
     const [lists, setLists] = useState(null);
 
@@ -15,11 +16,27 @@ const Lists = () => {
         })();
     }, [])
 
+    const handleAddList = async (data, setApiError) => {
+        const { dataList, error } = await createList(data);
+        if (error) {
+            if (!error.errors && !error.message) return setApiError({ message: "Erreur interne" });
+            setApiError(error);
+        } else {
+            setLists([...lists, dataList]);
+        }
+    }
+    const handleRemoveList = async (list) => {
+        const { error } = await deleteList(list._id)
+        if (!error) setLists(lists.filter(l => (l._id !== list._id)));
+    }
     return (
         <>
             <h1>Toutes les listes</h1>
             <PermProtect access="lists.read">
-                <ListsTable lists={lists} setLists={setLists} />
+                <ListsTable handles={{ handleRemoveList }} lists={lists} />
+            </PermProtect>
+            <PermProtect access="lists.create">
+                <CreateListForm handleAddList={handleAddList}></CreateListForm>
             </PermProtect>
         </>
     )

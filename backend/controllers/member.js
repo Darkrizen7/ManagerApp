@@ -1,40 +1,46 @@
 const List = require('../models/list');
 const Member = require('../models/member');
 const { tl } = require('../utils/translator');
+const { hasAccess } = require('../lib/access_manager');
+const { JSONErr } = require('../lib/error_manager');
 
 // ------------------------------------- Member CRUD ------------------------------------- //
 //Add a member to a list
 exports.create = async (req, res) => {
     const { surname, lastname, student_number, email, support, role, list } = req.body
+    const accessAllowed = await hasAccess(req, "members.create", list)
+    if (!accessAllowed) return JSONErr(res, tl("unauthorized_access"))
+
     try {
         const listToAdd = await List.findById(list);
-        if (!listToAdd) {
-            res.json({ success: false, message: tl("list_not_found:") + list });
-            return
-        }
+        if (!listToAdd) return JSONErr(res, tl("list_not_found;") + list)
+
         const member = await Member({ surname, lastname, student_number, email, support, role, list });
         await member.save();
         res.json({ success: true, member });
-    } catch (e) {
-        res.json({ success: false, error: e, message: e.message })
-    }
+    } catch (e) { return JSONErr(res, e) }
 }
 
 //Remove a member from a list
 exports.remove = async (req, res) => {
     const { _id } = req.body;
     try {
-        const member = await Member.findByIdAndRemove(_id);
+        const member = await Member.findById(_id).populate("list");
+        const accessAllowed = await hasAccess(req, "members.delete", member.list ? member.list._id : null)
+        if (!accessAllowed) return JSONErr(res, tl("unauthorized_access"))
+
+        const mb = await Member.findByIdAndDelete(_id);
         res.json({ success: true });
         return;
-    } catch (e) {
-        res.json({ success: false, error: e, message: e.message });
-    }
+    } catch (e) { return JSONErr(res, e) }
 }
 
 //Update a member from a list
 exports.update = async (req, res) => {
     const { _id, surname, lastname, student_number, email, support, list } = req.body;
+    const accessAllowed = await hasAccess(req, "members.update", list)
+    if (!accessAllowed) return JSONErr(res, tl("unauthorized_access"))
+
     try {
         const member = await Member.findByIdAndUpdate(_id, {
             $set: {
@@ -42,32 +48,25 @@ exports.update = async (req, res) => {
             }
         }, { new: true });
         res.json({ success: true, member });
-    } catch (e) {
-        res.json({ success: false, error: e, message: e.message });
-    }
+    } catch (e) { return JSONErr(res, e) }
 }
 
 exports.get = async (req, res) => {
-    const { list, _id } = req.query;
+    const { list } = req.query;
+    const accessAllowed = await hasAccess(req, "members.read", list)
+    if (!accessAllowed) return JSONErr(res, tl("unauthorized_access"))
+
     try {
         const members = await Member.find(list ? { list } : null).populate("list", "name _id");
-        res.json({
-            success: true,
-            members
-        });
-    } catch (e) {
-        res.json({ success: false, error: e, message: e.message });
-
-    }
+        res.json({ success: true, members });
+    } catch (e) { return JSONErr(res, e) }
 }
 
 exports.getForUser = async (req, res) => {
     const { email } = req.user;
     try {
         const member = await Member.findOne({ email }).populate("list", "name _id");
-        if (!member) { res.json({ success: false, message: tl("member_not_found") }); return; }
+        if (!member) return JSONErr(res, tl("member_not_found"));
         res.json({ success: true, member });
-    } catch (e) {
-        res.json({ success: false, error: e, message: e.message });
-    }
+    } catch (e) { return JSONErr(res, e) }
 }

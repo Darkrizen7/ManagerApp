@@ -6,43 +6,37 @@ import { PermProtect, usePerm } from "hooks/PermContext";
 const ListInfo = (props) => {
     const { list, setList } = props;
     const { hasAccess } = usePerm();
-    const handleRemoveMember = async (member, setPending) => {
+
+    const handleRemoveMember = async (member) => {
         if (!hasAccess("members.delete", list._id)) { alert("Accès interdit"); return; }
-        setPending(true);
         const { error } = await removeMember(member);
         if (!error) setList({ ...list, members: list.members.filter(mb => mb._id !== member._id) })
-        setPending(false)
     }
 
-    const handleAddMember = async (formData, setPending) => {
+    const handleAddMember = async (formData) => {
         if (!hasAccess("members.create", list._id)) return;
-        setPending(true);
         formData.list = list._id;
         const { dataMember, error } = await createMember(formData);
         if (error) {
-            setPending(false);
             return;
         } else if (dataMember) {
             const members = list.members;
             members.push(dataMember);
             setList({ ...list, members })
-            setPending(false);
         }
     }
 
-    const handleUpdateMember = async (formData, setPending, setError, setIsEditing) => {
+    const handleUpdateMember = async (formData, setMemberEditing) => {
         if (!hasAccess("members.update", list._id)) return;
-        setPending(true);
         const { dataMember, error } = await updateMember(formData);
-        setPending(false);
-        setIsEditing(false);
         if (error || !dataMember) return;
         setList({
             ...list, members: list.members.map((mb) => {
                 return (mb._id === formData._id) ? dataMember : mb
             })
         })
-
+        setMemberEditing(null);
+        return
     }
     return (
         <>

@@ -16,12 +16,12 @@ const fetchList = async (_id) => {
 const createList = async (formData) => {
     const url = new URL(API_URL + "lists");
     const { data, error } = await fetchAPIWithFormData(url, "post", formData);
-    return { dataLists: data.lists ? data.lists : null, error }
+    return { dataList: data ? data.list : null, error }
 }
 
 const deleteList = async (_id) => {
     const url = new URL(API_URL + "lists");
-    const { data, error } = await fetchAPIWithFormData(url, "delete", { _id });
-    return { dataLists: data.lists ? data.lists : null, error }
+    const { error } = await fetchAPIWithFormData(url, "delete", { _id });
+    return { error }
 }
 export { fetchList, fetchLists, createList, deleteList }

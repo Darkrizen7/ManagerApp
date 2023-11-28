@@ -1,5 +1,5 @@
 exports.test = async (req, res) => {
-    console.log(req.body.testText);
+
     try {
         if (!req.files) {
             res.send({
@@ -10,6 +10,7 @@ exports.test = async (req, res) => {
             let file = req.files.file;
 
             file.mv("./uploads/" + file.name);
+
 
             res.send({
                 status: "success",

@@ -1,12 +1,12 @@
-import { TransactionForm } from ".";
+import { TransactionForm } from "..";
 import { updateTransaction } from "lib/api";
 
 const EditTransactionForm = (props) => {
     const { transaction, handleEdit } = props;
 
-    const handleSubmit = async (formData) => {
+    const handleSubmit = async (formData, setApiError) => {
         const { dataTransaction, error } = await updateTransaction(formData);
-        if (error) console.log(error);
+        if (error) setApiError(error)
         if (dataTransaction) handleEdit(dataTransaction);
     };
     return (

@@ -1,34 +1,64 @@
-import { removeTransaction } from "lib/api";
-import { TransactionRow } from ".";
+import { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+
+import { PermProtect } from 'hooks/PermContext';
+import { Table } from 'components';
+import { removeTransaction } from 'lib/api';
 
 const TransactionsTable = (props) => {
     const { transactions, setTransactions } = props;
-    const handleRemove = async (transaction, setPending) => {
-        setPending(true);
+    const history = useHistory();
+
+    const goToTransaction = (transaction) => {
+        history.push("/transactions/get/" + transaction._id);
+    }
+    const handleRemoveTransaction = async (transaction) => {
         const removed = await removeTransaction(transaction._id);
         if (removed) setTransactions(transactions.filter((tr) => tr._id !== transaction._id));
-        setPending(false);
     }
+
+    const columns = [
+        {
+            header: 'Infos',
+            columns: [
+                { accessorKey: 'name', header: 'Nom' },
+                { accessorKey: 'list.name', header: 'Liste' },
+                { accessorKey: 'amount', header: 'Montant', cell: info => (<span style={{ color: info.getValue() >= 0 ? "green" : "red" }}>{info.getValue() + "€"}</span>) },
+                { accessorKey: 'approved', header: 'Approuvé', cell: info => (<span style={{ color: info.getValue() ? "green" : "red" }}>{info.getValue() ? "Oui" : "Non"}</span>) },
+            ],
+        },
+        {
+            header: 'Actions',
+            cell: info => {
+                return (
+                    <>
+                        <PermProtect access={"transactions.read"} listId={info.row.original.list._id} noshow={true}>
+                            <button className="submit"
+                                type="submit"
+                                onClick={() => { goToTransaction(info.row.original) }}>Voir</button>
+                        </PermProtect>
+                        <PermProtect access={"transactions.delete"} listId={info.row.original.list._id} noshow={true}>
+                            <button className="submit"
+                                type="submit"
+                                onClick={() => { handleRemoveTransaction(info.row.original) }}>Retirer</button>
+                        </PermProtect>
+                    </>
+                );
+            },
+        }
+    ]
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        if (!transactions) return;
+        setData(transactions);
+    }, [transactions]);
+
     return (
-        <table>
-            <thead>
-                <tr>
-                    <th scope="col">Liste</th>
-                    <th scope="col">Nom</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Montant</th>
-                    <th scope="col">Approuvée</th>
-                    <th scope="col">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {(transactions && transactions.length > 0) ?
-                    transactions.map(transaction =>
-                        <TransactionRow key={transaction._id} transaction={transaction} handleRemove={handleRemove} />
-                    ) : null
-                }
-            </tbody>
-        </table>
+        <>
+            <Table columns={columns} data={data} />
+        </>
     );
-}
+};
+
 export { TransactionsTable };

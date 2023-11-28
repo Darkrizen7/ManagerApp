@@ -24,20 +24,20 @@ const removeTransaction = async (_id) => {
 const approveTransaction = async (_id) => {
     const url = new URL(API_URL + "transactions/approve");
     const { data, error } = await fetchAPIWithFormData(url, "put", { _id });
-    return { dataTransaction: data.transaction ? data.transaction : null, error };
+    return { dataTransaction: data ? data.transaction : null, error };
 }
 
 const updateTransaction = async (formData) => {
     const { url, fData } = createFormDataAndURL("transactions", formData);
     fData.set("file", formData.file[0]);
     const { data, error } = await fetchAPIWithFormData(url, "put", fData);
-    return { dataTransaction: data.transaction ? data.transaction : null, error };
+    return { dataTransaction: data ? data.transaction : null, error };
 }
 
 const createTransaction = async (formData) => {
     const { url, fData } = createFormDataAndURL("transactions", formData);
     fData.set("file", formData.file[0]);
     const { data, error } = await fetchAPIWithFormData(url, "post", fData);
-    return { dataTransaction: data.transaction, error };
+    return { dataTransaction: data ? data.transaction : null, error };
 }
 export { fetchTransaction, fetchTransactions, removeTransaction, approveTransaction, updateTransaction, createTransaction }

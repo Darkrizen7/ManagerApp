@@ -11,14 +11,18 @@ const {
 } = require('../controllers/member');
 
 const {
+    validateMember,
+    memberValidation,
+} = require('../middlewares/validation/members');
+const {
     isAuth,
 } = require('../middlewares/auth');
 
 // Listes
 router.get('/', isAuth, get);
-router.post('/', isAuth, create);
+router.post('/', isAuth, validateMember, memberValidation, create);
+router.put('/', isAuth, validateMember, memberValidation, update);
 router.delete('/', isAuth, remove);
-router.put('/', isAuth, update);
 
 router.get('/user', isAuth, getForUser);
 module.exports = router;

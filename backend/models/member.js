@@ -10,7 +10,6 @@ const memberSchema = new mongoose.Schema({
     },
     student_number: {
         type: String,
-        required: true,
     },
     email: {
         type: String,

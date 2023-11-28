@@ -24,20 +24,30 @@ const TransactionInfo = (props) => {
         <>
             {transaction &&
                 <>
-                    <h1>{transaction.name}</h1>
-                    <h2 style={{ color: (transaction.amount > 0) ? "green" : "red" }}>Montant :{transaction.amount}€</h2>
-                    <h2 style={{ color: (transaction.approved) ? "green" : "orange" }}>{transaction.approved ? "Approuvé" : "En cours d'approbation"}</h2>
-                    <p>{transaction.desc}</p>
-                    <ImageFetch api_path="transactions/proof" params={{ _id: transaction._id }}></ImageFetch>
-                    {!transaction.approved && hasAccess("transactions.approve", transaction.list._id) &&
-                        <button onClick={handleApprove} disabled={pending}>Approuver</button>
-                    }
-                    {transaction.approved &&
-                        <p>Transaction approuvé par : {transaction.approved_by.username} à {transaction.approved_at}</p>
-                    }
-                    <PermProtect access={"transactions.update"} listId={transaction.list._id} noshow={true}>
-                        <EditTransactionForm transaction={transaction} handleEdit={handleEdit} />
-                    </PermProtect>
+                    <div>
+                        <h1>{transaction.name}</h1>
+                        <strong style={{ color: (transaction.amount > 0) ? "green" : "red" }}>
+                            {transaction.amount}€
+                        </strong>
+                        <br />
+                        <strong style={{ color: (transaction.approved) ? "green" : "orange" }}>
+                            {transaction.approved ? "Approuvé" : "En cours d'approbation"}
+                        </strong>
+                        {transaction.approved &&
+                            <p>Par : {transaction.approved_by.username} à {new Date(transaction.approved_at).toLocaleString("fr-FR")}</p>
+                        }
+                        {!transaction.approved && hasAccess("transactions.approve", transaction.list._id) &&
+                            <button onClick={handleApprove} disabled={pending}>Approuver</button>
+                        }
+                        Créée à {transaction.created_at && new Date(transaction.created_at).toLocaleString("fr-FR")}
+                        <p>{transaction.type}<br />{transaction.desc}</p>
+                        <ImageFetch api_path="transactions/proof" params={{ _id: transaction._id }}></ImageFetch>
+                    </div>
+                    <div>
+                        <PermProtect access={"transactions.update"} listId={transaction.list._id} noshow={true}>
+                            <EditTransactionForm transaction={transaction} handleEdit={handleEdit} />
+                        </PermProtect>
+                    </div>
                 </>
             }
         </>

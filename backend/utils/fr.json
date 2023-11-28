@@ -11,6 +11,12 @@
     "invalid_username": "Nom d'utilisateur invalide",
     "invalid_password": "Mot de passe invalide",
     "invalid_email": "Addresse email invalide",
+    "invalid_lastname": "Nom invalide",
+    "invalid_surname": "Prénom invalide",
+    "invalid_student_number": "Numéro étudiant invalide",
+    "invalid_amount": "Montant invalide",
+    "invalid_transaction_name": "Nom invalide",
+    "transaction_name_validation": "Le nom doit être compris entre 3 et 20 caractères",
     "password_validation": "Le mot de passe doit être compris entre 3 et 20 caractères",
     "username_validation": "Le nom d'utilisateur doit être compris entre 3 et 20 caractères",
     "email_pwd_required": "L'email et le mot de passe sont requis",
@@ -21,5 +27,7 @@
     "list_not_found:": "Liste introuvable: ",
     "user_has_no_list": "L'utilisateur n'a pas de liste",
     "member_not_found": "Membre introuvable",
-    "transaction_not_found": "Transaction introuvable"
+    "transaction_not_found": "Transaction introuvable",
+    "invalid_transaction": "Transaction invalide",
+    "invalid_member": "Membre invalide"
 }
