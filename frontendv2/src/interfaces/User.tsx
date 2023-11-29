@@ -1,4 +1,4 @@
-interface User {
+class User {
     _id: object;
     username: string;
     email: string;

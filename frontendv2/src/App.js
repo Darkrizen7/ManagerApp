@@ -7,7 +7,7 @@ import { NavBar } from 'components'
 
 import { GetMembers } from 'pages/members';
 import { Lists, List } from 'pages/lists';
-import { Transactions, Transaction } from 'pages/transactions';
+import { TransactionsRoute, TransactionRoute } from 'pages/transactions';
 
 import { Home } from 'pages/home';
 import { Login } from 'pages/login';
@@ -30,9 +30,9 @@ function App() {
               <Route path="/lists/get" component={List} />
               <Route path="/lists" component={Lists} />
 
-              <Route path="/transactions/get/:transactionId" component={Transaction} />
-              <Route path="/transactions/getByList/:list" component={Transactions} />
-              <Route path="/transactions" component={Transactions} />
+              <Route path="/transactions/get/:transactionId" component={TransactionRoute} />
+              <Route path="/transactions/getByList/:list" component={TransactionsRoute} />
+              <Route path="/transactions" component={TransactionsRoute} />
 
               <Route path="/login" component={Login} />
               <Route path="/" component={Home} />

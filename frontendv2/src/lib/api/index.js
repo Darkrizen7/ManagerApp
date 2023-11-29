@@ -2,7 +2,7 @@ import { fetchWrapper } from "lib/fetchWrapper.js";
 
 export * from "./lists.js"
 export * from "./members.js"
-export * from "./transactions.js"
+export * from "./transactions"
 
 const API_URL = "http://localhost:3000/";
 

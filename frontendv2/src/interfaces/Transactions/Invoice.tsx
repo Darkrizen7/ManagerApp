@@ -1,6 +1,6 @@
 import { Transaction } from "interfaces";
 
-interface Invoice extends Transaction {
+class Invoice extends Transaction {
     amount_HT: number;
     toReimburse: string;
     RIB: File;

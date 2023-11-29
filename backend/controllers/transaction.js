@@ -80,7 +80,7 @@ const dateFormat = (date) => {
     return formattedDate;
 }
 exports.update = async (req, res) => {
-    const { _id, name, desc, amount, type, amount_ht, toreimburse } = req.body;
+    const { _id, name, desc, amount, type, amount_ht, toreimburse, date } = req.body;
     try {
         const tr = await Transaction.findById(_id);
         const accessAllowed = await hasAccess(req, "transactions.update", tr.list)
@@ -88,7 +88,7 @@ exports.update = async (req, res) => {
 
         const transaction = await Transaction.findByIdAndUpdate(_id, {
             $set: {
-                name, desc, amount, amount_ht, type, toreimburse, approved: false, approved_by: null, approved_at: null
+                name, desc, amount, amount_ht, type, toreimburse, date, approved: false, approved_by: null, approved_at: null
             }
         }, { new: true });
         if (!transaction) return JSONErr(res, tl("transaction_not_found"))

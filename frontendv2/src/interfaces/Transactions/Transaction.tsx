@@ -1,6 +1,6 @@
 import { User } from 'interfaces/User';
 import { List } from 'interfaces/List';
-interface Transaction {
+class Transaction {
     _id: object;
     name: string;
     desc: string;

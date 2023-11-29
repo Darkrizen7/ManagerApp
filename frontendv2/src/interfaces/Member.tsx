@@ -1,6 +1,6 @@
 import { List } from "./List";
 
-interface Member {
+class Member {
     _id: object;
     firstname: string;
     lastname: string;
