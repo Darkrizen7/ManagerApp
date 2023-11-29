@@ -9,17 +9,17 @@ const Filter = ({ column, table }) => {
         case "boolean": return (
             <>
                 <select id={column.id + 'list'} onChange={e => { column.setFilterValue(e.target.value === "true" ? true : false) }}>
-                    <option value="" key="default" >Oui/Non</option>
-                    <option value={true} key={true} >Oui</option>
-                    <option value={false} key={false} >Non</option>
+                    <option value="" key="baseoptionbool" >Oui/Non</option>
+                    <option value={true} key={"true"} >Oui</option>
+                    <option value={false} key={"false"} >Non</option>
                 </select>
             </>
         );
         default:
             return (<>
                 <datalist id={column.id + 'list'}>
-                    {sortedUniqueValues.slice(0, 5000).map((value) => (
-                        <option value={value} key={value} />
+                    {sortedUniqueValues.slice(0, 5000).map((value, index) => (
+                        <option value={value} key={index} />
                     ))}
                 </datalist>
                 <DebouncedInput

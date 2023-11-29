@@ -20,6 +20,7 @@ const MembersTable = (props) => {
         {
             header: 'Info',
             columns: [
+                { accessorKey: 'list.name', header: 'Liste' },
                 { accessorKey: 'student_number', header: 'Numéro étudiant' },
                 { accessorKey: 'email', header: "Email" },
                 { accessorKey: 'support', header: "Soutien", cell: info => (info.getValue() ? "Oui" : "Non"), filterFn: 'bool' },

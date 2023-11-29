@@ -30,10 +30,8 @@ mongoose.connect(process.env.MONGO_URI,
                     mb[head[i]] = membre[i];
                 }
                 try {
-                    const mbDb = Member(mb);
-                    mbDb.list = list._id;
-                    console.log("Membre " + mb.email + " ajouté à " + name);
-                    await mbDb.save();
+                    const mbDb = await Member.findOne({ email: mb.email }).populate("list");
+                    console.log(mbDb.email, mbDb.list.name);
                 } catch (e) {
                     console.log(e.message);
                 }

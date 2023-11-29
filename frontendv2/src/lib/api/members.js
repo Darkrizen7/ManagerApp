@@ -18,6 +18,7 @@ const createMember = async (formData) => {
 }
 const updateMember = async (member) => {
     const { data, error } = await fetchAPIWithData("members", "put", member);
+    console.log(data, error);
     return { dataMember: data ? data.member : null, error }
 }
 

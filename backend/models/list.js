@@ -39,7 +39,12 @@ listSchema.methods.getAccount = async function () {
 };
 listSchema.methods.fullPopulate = async function () {
     await this.populate("transactions");
-    await this.populate("members");
+    await this.populate({
+        path: 'members',
+        populate: {
+            path: 'list'
+        }
+    });
     const account = await this.getAccount();
     this.account = account;
     return;

@@ -69,9 +69,18 @@ exports.remove = async (req, res) => {
     } catch (e) { return JSONErr(res, e) }
 
 }
+const dateFormat = (date) => {
+    const currentDate = new Date();
 
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(currentDate.getDate()).padStart(2, '0');
+
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
+}
 exports.update = async (req, res) => {
-    const { _id, name, desc, amount, type } = req.body;
+    const { _id, name, desc, amount, type, amount_ht, toreimburse } = req.body;
     try {
         const tr = await Transaction.findById(_id);
         const accessAllowed = await hasAccess(req, "transactions.update", tr.list)
@@ -79,15 +88,35 @@ exports.update = async (req, res) => {
 
         const transaction = await Transaction.findByIdAndUpdate(_id, {
             $set: {
-                name, desc, amount, type, approved: false, approved_by: null, approved_at: null
+                name, desc, amount, amount_ht, type, toreimburse, approved: false, approved_by: null, approved_at: null
             }
         }, { new: true });
         if (!transaction) return JSONErr(res, tl("transaction_not_found"))
 
         try {
             if (req.files) {
-                let file = req.files.file;
-                file.mv("./uploads/" + _id + "/proof.jpg");
+                Object.entries(req.files).forEach(entry => {
+                    const [key, value] = entry;
+                    let file = req.files[key];
+                    var fileName;
+                    if (key === "BNP") {
+                        fileName = name + "-BNP-" + dateFormat() + ".pdf";
+
+                    } else if (key === "contract") {
+                        fileName = name + (type === "Intérim" ? "-Intérim-" : "-Sponsoring-") + dateFormat() + ".pdf";
+
+                    } else if (key === "RIB") {
+                        fileName = "RIB.pdf";
+
+                    } else if (key === "facture") {
+                        fileName = toreimburse + "-" + name + "-Facture-" + dateFormat() + ".pdf";
+
+                    } else if (key === "frais") {
+                        fileName = toreimburse + "-NdF-" + dateFormat() + ".pdf";
+                    }
+
+                    file.mv("./uploads/" + _id + "/" + fileName);
+                });
             }
         } catch (e) {
             console.log(e);

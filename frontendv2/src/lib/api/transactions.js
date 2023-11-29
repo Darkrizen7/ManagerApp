@@ -29,14 +29,22 @@ const approveTransaction = async (_id) => {
 
 const updateTransaction = async (formData) => {
     const { url, fData } = createFormDataAndURL("transactions", formData);
-    fData.set("file", formData.file[0]);
+    if (formData.proof) fData.set("proof", formData.proof[0]);
+    if (formData.contract) fData.set("contract", formData.contract[0]);
+    if (formData.RIB) fData.set("RIB", formData.RIB[0]);
+    if (formData.facture) fData.set("facture", formData.facture[0]);
+    if (formData.frais) fData.set("frais", formData.frais[0]);
     const { data, error } = await fetchAPIWithFormData(url, "put", fData);
     return { dataTransaction: data ? data.transaction : null, error };
 }
 
 const createTransaction = async (formData) => {
     const { url, fData } = createFormDataAndURL("transactions", formData);
-    fData.set("file", formData.file[0]);
+    if (formData.proof) fData.set("proof", formData.proof[0]);
+    if (formData.contract) fData.set("contract", formData.contract[0]);
+    if (formData.RIB) fData.set("RIB", formData.RIB[0]);
+    if (formData.facture) fData.set("facture", formData.facture[0]);
+    if (formData.frais) fData.set("frais", formData.frais[0]);
     const { data, error } = await fetchAPIWithFormData(url, "post", fData);
     return { dataTransaction: data ? data.transaction : null, error };
 }
