@@ -5,7 +5,6 @@ interface Transaction {
     name: string;
     desc: string;
     amount_TTC: number;
-    amount_HT: number;
     approved: boolean;
     type: string;
     list: List;
