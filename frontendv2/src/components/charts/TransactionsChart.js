@@ -28,9 +28,10 @@ const TransactionsChart = (props) => {
         ],
     });
     useEffect(() => {
-        let labels = [];
-        let datas = [];
-        let datasApproved = [];
+        let labels = ["2023-10-15"];
+        let datas = [0];
+        let datasApproved = [0];
+        let datasAimed = [0];
         let totalAmount = 0;
         let totalAmountApprouved = 0;
         if (!transactions) return;
@@ -49,9 +50,14 @@ const TransactionsChart = (props) => {
                 labels.push(transaction.date);
                 datas.push(totalAmount);
                 datasApproved.push(totalAmountApprouved);
+                datasAimed.push(null)
             }
         }
-        setData({ labels, datasets: [{ data: datas, ...dataSetOpts }, { data: datasApproved, ...dataSetOpts, borderColor: 'rgba(10,250,10,1)' }] });
+        labels.push("2024-02-27");
+        datas.push(totalAmount);
+        datasApproved.push(totalAmountApprouved);
+        datasAimed.push(15000)
+        setData({ labels, datasets: [{ data: datasAimed, ...dataSetOpts, spanGaps: true }, { data: datas, ...dataSetOpts }, { data: datasApproved, ...dataSetOpts, borderColor: 'rgba(10,250,10,1)' }] });
     }, [transactions])
 
     const options = {
