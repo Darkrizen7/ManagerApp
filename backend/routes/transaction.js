@@ -4,7 +4,7 @@ const router = express.Router();
 
 const {
     get,
-    getProof,
+    downloadMerged,
     update,
     create,
     remove,
@@ -21,7 +21,7 @@ const {
 } = require('../middlewares/auth');
 
 
-router.get('/proof', isAuth, getProof);
+router.get('/download', isAuth, downloadMerged);
 router.put('/approve', isAuth, approve);
 
 router.get('/', isAuth, get);

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { EditTransactionForm } from ".";
-import { approveTransaction } from "lib/api";
-import { ImageFetch } from "components/ImageFetch";
+import { approveTransaction, downloadMerged } from "lib/api";
 import { PermProtect, usePerm } from "hooks/PermContext";
 
 const TransactionInfo = (props) => {
@@ -16,6 +15,10 @@ const TransactionInfo = (props) => {
         const { dataTransaction } = await approveTransaction(transaction._id);
         if (dataTransaction) setTransaction(dataTransaction);
         setPending(false);
+    }
+    const handleDownloadMerged = async (e) => {
+        if (!hasAccess("transactions.approve", transaction.list._id)) { return; }
+        const { error } = await downloadMerged(transaction);
     }
     const handleEdit = (transaction) => {
         setTransaction(transaction);
@@ -39,9 +42,11 @@ const TransactionInfo = (props) => {
                         {!transaction.approved && hasAccess("transactions.approve", transaction.list._id) &&
                             <button onClick={handleApprove} disabled={pending}>Approuver</button>
                         }
+                        <PermProtect access={"transactions.approve"} listId={transaction.list._id} noshow={true}>
+                            <button onClick={handleDownloadMerged}>Télécharger le merge</button>
+                        </PermProtect>
                         Créée à {transaction.created_at && new Date(transaction.created_at).toLocaleString("fr-FR")}
                         <p>{transaction.type}<br />{transaction.desc}</p>
-                        <ImageFetch api_path="transactions/proof" params={{ _id: transaction._id }}></ImageFetch>
                     </div>
                     <div>
                         <PermProtect access={"transactions.update"} listId={transaction.list._id} noshow={true}>

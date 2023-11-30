@@ -37,7 +37,7 @@ const TransactionsTable = (props) => {
                                 type="submit"
                                 onClick={() => { goToTransaction(info.row.original) }}>Voir</button>
                         </PermProtect>
-                        <PermProtect access={"transactions.delete"} listId={info.row.original.list._id} noshow={true}>
+                        <PermProtect access={"transactions.delete" + (info.row.original.approved ? "" : "NonApproved")} listId={info.row.original.list._id} noshow={true}>
                             <button className="submit"
                                 type="submit"
                                 onClick={() => { handleRemoveTransaction(info.row.original) }}>Retirer</button>

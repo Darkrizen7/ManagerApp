@@ -24,6 +24,7 @@ app.use(fileupload({
 app.use(cors({
     origin: 'http://localhost:8000',
     credentials: true,
+    exposedHeaders: ["Content-Type", "Content-Disposition"]
 }));
 app.use(cookieParser());
 app.use(express.json());

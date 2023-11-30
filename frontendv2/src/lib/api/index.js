@@ -29,4 +29,31 @@ const fetchAPIWithData = async (url_path, method, formData) => {
     const { data, error } = await fetchAPIWithFormData(url, method, fData);
     return { data, error }
 }
-export { API_URL, fetchAPIWithData, createFormDataAndURL, fetchAPIWithFormData }
+
+const fetchFile = async (url) => {
+    try {
+        const res = await fetch(url, { credentials: "include" });
+        if (!res.ok) return { error: { message: "Erreur interne" } }
+
+        const contentType = res.headers.get('Content-Type');
+        if (contentType.includes('application/json')) {
+            const data = await res.json();
+            return data;
+        }
+        const blob = await res.blob();
+
+        const contentDisposition = res.headers.get('Content-Disposition');
+        const filenameMatch = contentDisposition && contentDisposition.includes('filename');
+        const filename = filenameMatch ? contentDisposition.split('"')[1] : 'downloaded_file';
+
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        return {};
+    } catch (error) { return { error } }
+}
+export { API_URL, fetchAPIWithData, createFormDataAndURL, fetchAPIWithFormData, fetchFile }

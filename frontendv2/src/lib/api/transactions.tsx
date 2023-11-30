@@ -1,5 +1,5 @@
 import { Transaction } from 'interfaces';
-import { API_URL, fetchAPIWithData, createFormDataAndURL, fetchAPIWithFormData } from '.';
+import { API_URL, fetchAPIWithData, createFormDataAndURL, fetchAPIWithFormData, fetchFile } from '.';
 
 const fetchTransactions = async (list) => {
     const url = new URL(API_URL + "transactions");
@@ -58,4 +58,15 @@ const createTransaction = async (formData) => {
     let dataTransaction: Transaction = data?.transaction;
     return { dataTransaction, error };
 }
-export { fetchTransaction, fetchTransactions, removeTransaction, approveTransaction, updateTransaction, createTransaction }
+
+const downloadMerged = async (transaction: Transaction) => {
+    const url = new URL(API_URL + "transactions/download");
+    if (transaction) url.searchParams.append("_id", transaction._id);
+    const { error } = await fetchFile(url, "merged.pdf");
+    return { error }
+}
+export {
+    fetchTransaction, fetchTransactions, removeTransaction,
+    approveTransaction, updateTransaction, createTransaction,
+    downloadMerged
+}

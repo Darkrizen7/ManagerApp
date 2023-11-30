@@ -1,7 +1,7 @@
 import { User } from 'interfaces/User';
 import { List } from 'interfaces/List';
 class Transaction {
-    _id: object;
+    _id: string;
     name: string;
     desc: string;
     amount_TTC: number;
