@@ -12,6 +12,10 @@ const transactionSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    date: {
+        type: Date,
+        required: true,
+    },
     approved: {
         type: Boolean,
         required: true,

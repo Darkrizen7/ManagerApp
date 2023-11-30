@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 
-import { CreateTransactionForm, TransactionInfo, TransactionsTable } from "components";
+import { CreateTransactionForm, TransactionInfo, TransactionsTable, TransactionsChart } from "components";
 import { fetchTransaction, fetchTransactions } from "lib/api";
 
 import { PermProtect, usePerm } from "hooks/PermContext";
@@ -39,6 +39,11 @@ const TransactionsRoute: React.FC<TransactionsRouteComponentProps> = (props) => 
                     < CreateTransactionForm list={list}></CreateTransactionForm>
                 }
             </PermProtect >
+            {list &&
+                <TransactionsChart transactions={transactions}>
+
+                </TransactionsChart>
+            }
         </>
     );
 }

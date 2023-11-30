@@ -165,7 +165,10 @@ exports.approve = async (req, res) => {
 
         await transaction.populate("list", "list.name list._id");
         await transaction.populate("approved_by");
-
+        const parentFolder = "uploads/" + _id;
+        if (!fs.existsSync(parentFolder)) {
+            fs.mkdirSync(parentFolder)
+        }
         const pdfReturn = new jsPDF();
         pdfReturn.text("Type : " + transaction.type, 10, 10);
         pdfReturn.text("Montant : " + transaction.amount + "€", 10, 30);

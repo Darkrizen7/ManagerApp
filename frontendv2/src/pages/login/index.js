@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import './login.css';
-
 import { useAuth } from 'hooks/AuthContext';
 
 const Login = () => {

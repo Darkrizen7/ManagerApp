@@ -1,5 +1,3 @@
-import './lists.css'
-
 import { useState, useEffect } from 'react';
 import { CreateListForm, ListInfo, ListsTable } from 'components';
 

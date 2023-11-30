@@ -1,0 +1,23 @@
+/* styles.css */
+:root {
+    --primary-color: #f1356d;
+    --secondary-color: #2ecc71;
+    --background-color: #767676;
+    --text-color: #333;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+@import './reset.css';
+@import './navbar.css';
+@import './forms.css';
+@import './tables.css';
+
+* {
+    font-family: "Quicksand";
+}
+
+.App {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

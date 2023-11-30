@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import 'App.css';
+import 'styles';
 
 import { AuthProvider } from 'hooks/AuthContext';
 import { NavBar } from 'components'
