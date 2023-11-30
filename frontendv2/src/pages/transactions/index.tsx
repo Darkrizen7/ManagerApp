@@ -1,17 +1,28 @@
+import React from "react";
 import { useEffect, useState } from "react";
 
 import { CreateTransactionForm, TransactionInfo, TransactionsTable } from "components";
 import { fetchTransaction, fetchTransactions } from "lib/api";
 
 import { PermProtect, usePerm } from "hooks/PermContext";
-const Transactions = (props) => {
+
+import { Transaction } from "interfaces";
+
+interface TransactionsRouteComponentProps {
+    match: {
+        params: {
+            list: string;
+        }
+    }
+}
+const TransactionsRoute: React.FC<TransactionsRouteComponentProps> = (props) => {
     const { list } = props.match.params;
-    const [transactions, setTransactions] = useState(null);
-    const { hasAccess } = usePerm();
+    const [transactions, setTransactions] = useState<Transaction[]>();
+    const { hasAccess } = usePerm<Function>();
 
     useEffect(() => {
         (async () => {
-            const { dataTransactions } = await fetchTransactions(list);
+            const { dataTransactions } = await fetchTransactions<Transaction[]>(list);
             if (dataTransactions) setTransactions(dataTransactions);
         })();
     }, [list]);
@@ -31,10 +42,18 @@ const Transactions = (props) => {
         </>
     );
 }
-const Transaction = (props) => {
+
+interface TransactionRouteComponentProps {
+    match: {
+        params: {
+            transactionId: string;
+        }
+    }
+}
+const TransactionRoute: React.FC<TransactionRouteComponentProps> = (props) => {
     const { transactionId } = props.match.params;
-    const [transaction, setTransaction] = useState(null);
-    const { hasAccess } = usePerm();
+    const [transaction, setTransaction] = useState<Transaction>();
+    const { hasAccess } = usePerm<Function>();
 
     useEffect(() => {
         (async () => {
@@ -53,4 +72,4 @@ const Transaction = (props) => {
         </>
     )
 }
-export { Transactions, Transaction };
+export { TransactionsRoute, TransactionRoute };

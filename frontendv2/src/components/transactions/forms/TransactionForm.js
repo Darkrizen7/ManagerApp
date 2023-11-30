@@ -3,13 +3,42 @@ import { useForm, Controller } from 'react-hook-form';
 
 const TransactionForm = (props) => {
     const { actionText } = props;
-    const { name, desc, amount, list, _id } = props.transaction;
     const [apiError, setApiError] = useState()
+
     const { register, handleSubmit, watch, control, formState: { errors } } = useForm({
         defaultValues: {
-            name, desc, amount, list, _id
+            ...props.transaction
         }
     });
+    const invoiceInputs = {
+        amount_ht: {
+            label: "Montant HT",
+            type: "number",
+            placeholder: "Montant HT",
+            opts: { required: true, }
+        },
+        toreimburse: {
+            label: "Payer (listeux)",
+            type: "text",
+            placeholder: "Personne à rembourser",
+            opts: { required: true, }
+        },
+        RIB: {
+            label: "RIB",
+            type: "file",
+            opts: { required: true, }
+        },
+        facture: {
+            label: "Facture",
+            type: "file",
+            opts: { required: true, }
+        },
+        frais: {
+            label: "Note de frais",
+            type: "file",
+            opts: { required: true, }
+        }
+    }
 
     const onSubmit = (data) => {
         props.handleSubmit(data, setApiError);
@@ -20,61 +49,39 @@ const TransactionForm = (props) => {
                 return (
                     <div className="input">
                         <label>Justificatif ouverture compte</label>
-                        <input type="file" {...register("proof")} />
+                        <input type="file" {...register("proof", { required: true })} style={{ backgroundColor: errors.proof ? "red" : null }} />
                     </div>
                 )
             case "Intérim":
                 return (
                     <div className="input">
                         <label>Contrat d'intérim</label>
-                        <input type="file" {...register("contract")} />
+                        <input type="file" {...register("contract", { required: true })} style={{ backgroundColor: errors.contract ? "red" : null }} />
                     </div>
                 )
             case "Sponsoring nature":
                 return (
                     <div className="input">
-                        <label>Contrat</label>
-                        <input type="file" {...register("contract")} />
+                        <label>Contrat de Sponsoring</label>
+                        <input type="file" {...register("contract", { required: true })} style={{ backgroundColor: errors.contract ? "red" : null }} />
                     </div>
                 )
             case "Sponsoring Financier":
                 return (
                     <div className="input">
-                        <label>Contrat</label>
-                        <input type="file" {...register("contract")} />
+                        <label>Contrat de Sponsoring</label>
+                        <input type="file" {...register("contract", { required: true })} style={{ backgroundColor: errors.contract ? "red" : null }} />
                     </div>
                 )
             case "Facture":
                 return (
                     <>
-                        <div className="input">
-                            <label>Montant HT</label>
-                            <input {...register("amount_ht")} placeholder="Montant HT" type="number" />
-                        </div>
-                        <div className="input">
-                            <Controller
-                                name="toreimburse"
-                                control={control}
-                                rules={{ required: 'Le nom du payeur est requis.' }}
-                                render={({ field }) => (
-                                    <>
-                                        <label>Payeur (listeux)</label>
-                                        <input style={{ backgroundColor: errors.toreimburse ? "red" : null }} type="text" {...field} placeholder='Personne à rembourser' />
-                                    </>
-                                )} />
-                        </div>
-                        <div className="input">
-                            <label>RIB</label>
-                            <input type="file" {...register("RIB")} />
-                        </div>
-                        <div className="input">
-                            <label>Facture</label>
-                            <input type="file" {...register("facture")} />
-                        </div>
-                        <div className="input">
-                            <label>Note de frais</label>
-                            <input type="file" {...register("frais")} />
-                        </div>
+                        {Object.entries(invoiceInputs).map(([key, input]) => (
+                            <div key={key} className="input">
+                                <label>{input.label}</label>
+                                <input {...register(key, input.opts)} placeholder={input.placeholder} type={input.type} style={{ backgroundColor: errors[key] ? "red" : null }}></input>
+                            </div>
+                        ))}
                     </>
                 )
             default: return <></>
@@ -92,8 +99,6 @@ const TransactionForm = (props) => {
                     ))}
                     {apiError && !apiError.errors && apiError.message &&
                         apiError.message
-                    }
-                    {errors && console.log(errors)
                     }
                 </div>
                 <div className="inputs">
@@ -115,7 +120,7 @@ const TransactionForm = (props) => {
                     </div>
                     <div className="input">
                         <label>Raison Social / {watch("type") === "Facture" ? "Destinataire" : "Apporteur"} </label>
-                        <input {...register("name")} placeholder="Nom" />
+                        <input {...register("name", { required: true })} placeholder="Nom" style={{ backgroundColor: errors.name ? "red" : null }} />
                     </div>
                     <div className="input">
                         <label>{watch("type") === "Sponsoring nature" ? "Nature de l'apport" : "Description"}</label>
@@ -123,7 +128,11 @@ const TransactionForm = (props) => {
                     </div>
                     <div className="input">
                         <label>Montant TTC</label>
-                        <input {...register("amount")} placeholder="Montant TTC" type="number" />
+                        <input {...register("amount", { required: true })} placeholder="Montant TTC" type="number" style={{ backgroundColor: errors.amount ? "red" : null }} />
+                    </div>
+                    <div className="input">
+                        <label>Date</label>
+                        <input {...register("date", { required: true })} type="date" style={{ backgroundColor: errors.amount ? "red" : null }} />
                     </div>
                     {switchType()}
                 </div>

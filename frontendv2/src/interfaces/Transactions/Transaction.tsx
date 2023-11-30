@@ -1,11 +1,10 @@
 import { User } from 'interfaces/User';
 import { List } from 'interfaces/List';
-interface Transaction {
+class Transaction {
     _id: object;
     name: string;
     desc: string;
     amount_TTC: number;
-    amount_HT: number;
     approved: boolean;
     type: string;
     list: List;
