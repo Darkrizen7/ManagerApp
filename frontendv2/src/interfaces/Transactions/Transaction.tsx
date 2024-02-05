@@ -1,16 +1,16 @@
-import { User } from 'interfaces/User';
-import { List } from 'interfaces/List';
-class Transaction {
+import { IUser } from 'interfaces/User';
+import { IList } from 'interfaces/List';
+class ITransaction {
     _id: string;
     name: string;
     desc: string;
-    amount_TTC: number;
+    amount: number;
     approved: boolean;
     type: string;
-    list: List;
+    list: IList;
     created_at: Date;
-    created_by: User;
-    approved_by: User;
+    created_by: IUser;
+    approved_by: IUser;
     approved_at: Date;
 }
-export { Transaction };
+export { ITransaction };

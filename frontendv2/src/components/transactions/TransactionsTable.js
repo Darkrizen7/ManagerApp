@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { PermProtect } from 'hooks/PermContext';
+import { PermProtect, usePerm } from 'hooks/PermContext';
 import { Table } from 'components';
-import { removeTransaction } from 'lib/api';
+import { removeTransaction, approveTransaction } from 'lib/api';
 
 const TransactionsTable = (props) => {
     const { transactions, setTransactions } = props;
     const history = useHistory();
+    const { hasAccess } = usePerm();
 
     const goToTransaction = (transaction) => {
         history.push("/transactions/get/" + transaction._id);
@@ -15,6 +16,16 @@ const TransactionsTable = (props) => {
     const handleRemoveTransaction = async (transaction) => {
         const removed = await removeTransaction(transaction._id);
         if (removed) setTransactions(transactions.filter((tr) => tr._id !== transaction._id));
+    }
+
+    const handleApproveTransaction = async (transaction) => {
+        if (!hasAccess("transactions.approve", transaction.list._id)) { return; }
+        const { dataTransaction } = await approveTransaction(transaction._id);
+        if (dataTransaction) {
+            setTransactions(transactions.map((tr) => {
+                return (tr._id === transaction._id) ? dataTransaction : tr
+            }))
+        }
     }
 
     const columns = [
@@ -42,6 +53,13 @@ const TransactionsTable = (props) => {
                                 type="submit"
                                 onClick={() => { handleRemoveTransaction(info.row.original) }}>Retirer</button>
                         </PermProtect>
+                        {hasAccess("transactions.approve", info.row.original.list._id) && !info.row.original.approved &&
+                            <button className="submit"
+                                type="submit"
+                                onClick={() => { handleApproveTransaction(info.row.original) }}>
+                                Approuver
+                            </button>
+                        }
                     </>
                 );
             },

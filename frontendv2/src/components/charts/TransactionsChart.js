@@ -1,99 +1,84 @@
-import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, TimeScale, LinearScale, LineElement, PointElement } from 'chart.js';
 import { useEffect, useState } from 'react';
-import 'chartjs-adapter-date-fns';
-ChartJS.register(
-    LineElement,
-    TimeScale,
-    LinearScale,
-    PointElement,
-)
+
+import { paliers } from "./BaseDatas";
+import { LineChart } from "./LineChart";
+
 const TransactionsChart = (props) => {
-    const { transactions } = props;
-    const dataSetOpts = {
-        label: 'Transactions',
-        backgroundColor: 'rgba(75,192,192,0.2)',
-        borderColor: 'rgba(200,200,0,1)',
-        borderWidth: 1,
-        hoverBackgroundColor: 'rgba(75,192,192,0.4)',
-        hoverBorderColor: 'rgba(75,192,192,1)',
-    };
-    const [data, setData] = useState({
-        labels: [],
-        datasets: [
-            {
-                data: [],
-                ...dataSetOpts
-            },
-        ],
-    });
+    const { transactions, campagne } = props;
+
+    const [data, setData] = useState();
+    const startDate = "2023-10-15";
+    const endDate = "2024-03-01";
+
     useEffect(() => {
-        let labels = ["2023-10-15"];
-        let datas = [0];
-        let datasApproved = [0];
-        let datasAimed = [0];
-        let totalAmount = 0;
-        let totalAmountApprouved = 0;
         if (!transactions) return;
+        const dataset = []
+
+        for (const palier of paliers[campagne ? campagne : "BDE"]) {
+            dataset.push(
+                {
+                    label: palier.label,
+                    borderColor: 'rgba(0,' + (0 + 200 * (dataset.length / paliers[campagne ? campagne : "BDE"].length)).toString() + ',' + (0 + 200 * (dataset.length / paliers[campagne ? campagne : "BDE"].length)).toString() + ',1)',
+                    labels: [startDate, endDate],
+                    datas: [0, palier.aimed],
+                    opts: {
+                        hidden: true,
+                        spanGaps: true,
+                    }
+                }
+            )
+        }
+
         transactions.sort(function (a, b) {
             return new Date(a.date) - new Date(b.date);
         });
-        for (const transaction of transactions) {
-            const index = labels.indexOf(transaction.date);
-            totalAmount += transaction.amount;
-            totalAmountApprouved += transaction.approved ? transaction.amount : 0;
+
+        const indexTr = dataset.push({
+            label: "Transactions",
+            borderColor: 'rgba(200,200,0,1)',
+            labels: [],
+            datas: [],
+        })
+        let totalAmount = 0;
+        for (const tr of transactions) {
+            totalAmount += tr.amount;
+            const index = dataset[indexTr - 1].labels.indexOf(tr.date);
+
             if (index > 0) {
-                datas[index] = totalAmount;
-                datasApproved[index] = totalAmountApprouved;
-            }
-            else {
-                labels.push(transaction.date);
-                datas.push(totalAmount);
-                datasApproved.push(totalAmountApprouved);
-                datasAimed.push(null)
+                dataset[indexTr - 1].datas[index] = totalAmount;
+            } else {
+                dataset[indexTr - 1].labels.push(tr.date);
+                dataset[indexTr - 1].datas.push(totalAmount);
             }
         }
-        labels.push("2024-02-27");
-        datas.push(totalAmount);
-        datasApproved.push(totalAmountApprouved);
-        datasAimed.push(15000)
-        setData({ labels, datasets: [{ data: datasAimed, ...dataSetOpts, spanGaps: true }, { data: datas, ...dataSetOpts }, { data: datasApproved, ...dataSetOpts, borderColor: 'rgba(10,250,10,1)' }] });
-    }, [transactions])
 
-    const options = {
-        scales: {
-            x: {
-                type: 'time',
-                suggestedMin: '2023-10-15',
-                suggestedMax: '2024-02-27',
-                time: {
-                    unit: "day",
-                    unitStepSize: 1000,
-                    displayFormats: {
-                        millisecond: 'MMM dd',
-                        second: 'MMM dd',
-                        minute: 'MMM dd',
-                        hour: 'MMM dd',
-                        day: 'MMM dd',
-                        week: 'MMM dd',
-                        month: 'MMM dd',
-                        quarter: 'MMM dd',
-                        year: 'MMM dd',
-                    }
-                }
-            },
-            y: {
-                beginAtZero: true,
-                title: "€",
-                suggestedMax: 20000
-            },
-        },
-    };
+        const transactionsApproved = transactions.filter((tr) => (tr.approved));
+        const indexTrApproved = dataset.push({
+            label: "Transactions Approved",
+            borderColor: 'rgba(0,200,0,1)',
+            labels: [],
+            datas: [],
+        })
+        totalAmount = 0;
+        for (const tr of transactionsApproved) {
+            totalAmount += tr.amount;
+            const index = dataset[indexTrApproved - 1].labels.indexOf(tr.date);
+
+            if (index > 0) {
+                dataset[indexTrApproved - 1].datas[index] = totalAmount;
+            } else {
+                dataset[indexTrApproved - 1].labels.push(tr.date);
+                dataset[indexTrApproved - 1].datas.push(totalAmount);
+            }
+        }
+        console.log(dataset)
+        setData(dataset);
+    }, [transactions, campagne])
 
     return (
         <div style={{ width: '80%', margin: 'auto', textAlign: 'center' }}>
             <h2>Transactions</h2>
-            <Line data={data} options={options} />
+            <LineChart dataset={data} />
         </div>
     );
 };

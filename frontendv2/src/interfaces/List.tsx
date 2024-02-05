@@ -1,8 +1,8 @@
-import { Member } from 'interfaces/Member';
-class List {
+import { IMember } from 'interfaces/Member';
+class IList {
     _id: object;
     name: string;
     campagne: string;
-    members: Array<Member>;
+    members: Array<IMember>;
 }
-export { List };
+export { IList };

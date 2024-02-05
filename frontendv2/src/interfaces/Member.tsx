@@ -1,11 +1,11 @@
-import { List } from "./List";
+import { IList } from "./List";
 
-class Member {
+class IMember {
     _id: object;
     firstname: string;
     lastname: string;
     student_number: number;
     role: string;
-    list: List;
+    list: IList;
 }
-export { Member };
+export { IMember };

@@ -16,7 +16,7 @@ exports.get = async (req, res) => {
     if (!accessAllowed) return JSONErr(res, tl("unauthorized_access"))
 
     try {
-        const transactions = await Transaction.find(list ? { list } : null).populate("list", "name _id");
+        const transactions = await Transaction.find(list ? { list } : null).populate("list", "campagne name _id");
         res.json({ success: true, transactions });
 
     } catch (e) { return JSONErr(res, e) }
@@ -31,7 +31,7 @@ exports.getTransaction = async (req, res) => {
 
         if (!transaction) return JSONErr(res, tl("transaction_not_found"));
 
-        await transaction.populate("list", "list.name list._id");
+        await transaction.populate("list", "name _id campagne");
         await transaction.populate("approved_by");
 
         res.json({ success: true, transaction, });
@@ -47,8 +47,7 @@ exports.create = async (req, res) => {
     try {
         const transaction = await Transaction({ name, desc, amount, type, amount_ht, toreimburse, date, user: req.user, list });
         await transaction.save();
-
-
+        await transaction.populate("list", "name _id campagne");
         try {
             if (req.files) {
                 Object.entries(req.files).forEach(async (entry) => {
@@ -71,9 +70,10 @@ exports.create = async (req, res) => {
                     } else if (key === "frais") {
                         fileName = toreimburse + "-NdF-" + dateFormat(dateFormatted) + ".pdf";
                     }
-                    const path = "./uploads/" + _id + "/" + fileName;
+                    const folder = "./uploads/" + transaction.list.name + "/" + transaction._id + "/";
+                    const path = folder + fileName;
+                    fs.mkdirSync(folder, { recursive: true })
                     fs.writeFileSync(path, file.data);
-                    docs.push(path);
                 });
             }
         } catch (e) {
@@ -87,6 +87,7 @@ exports.create = async (req, res) => {
 
 exports.remove = async (req, res) => {
     const { _id } = req.body;
+    if (!_id) return JSONErr(res, tl("invalid_id"));
     try {
         const transaction = await Transaction.findById(_id);
         const accessAllowed = await hasAccess(req, "transactions.delete" + (transaction.approved ? "" : "NonApproved"), transaction.list)
@@ -133,14 +134,16 @@ exports.update = async (req, res) => {
                     } else if (key === "frais") {
                         fileName = toreimburse + "-NdF-" + dateFormat(dateFormatted) + ".pdf";
                     }
-                    const path = "./uploads/" + _id + "/" + fileName;
+                    const folder = "./uploads/" + transaction.list.name + "/" + transaction._id + "/";
+                    const path = folder + fileName;
+                    fs.mkdirSync(folder, { recursive: true })
                     fs.writeFileSync(path, file.data);
                 });
             }
         } catch (e) {
             console.log(e);
         }
-        await transaction.populate("list", "list.name list._id");
+        await transaction.populate("list", "name _id campagne");
 
         const errors = transaction.validateSync();
         res.json({ success: true, transaction, })
@@ -163,11 +166,11 @@ exports.approve = async (req, res) => {
         }, { new: true });
         if (!transaction) return JSONErr(res, tl("transaction_not_found"))
 
-        await transaction.populate("list", "list.name list._id");
+        await transaction.populate("list", "name _id campagne");
         await transaction.populate("approved_by");
-        const parentFolder = "uploads/" + _id;
+        const parentFolder = "uploads/" + transaction.list.name + "/" + _id;
         if (!fs.existsSync(parentFolder)) {
-            fs.mkdirSync(parentFolder)
+            fs.mkdirSync(parentFolder, { recursive: true })
         }
         const pdfReturn = new jsPDF();
         pdfReturn.text("Type : " + transaction.type, 10, 10);
@@ -175,7 +178,7 @@ exports.approve = async (req, res) => {
         pdfReturn.text("Nom : " + transaction.name, 10, 50);
         pdfReturn.text("Approuvée par : " + req.user.username, 10, 70);
         pdfReturn.text("Approuvée le : " + dateFormat(Date.now()), 10, 90);
-        pdfReturn.save("uploads/" + _id + "/head.pdf");
+        pdfReturn.save("uploads/" + transaction.list.name + "/" + _id + "/head.pdf");
 
         res.json({ success: true, transaction, });
 
@@ -185,12 +188,12 @@ exports.approve = async (req, res) => {
 
 exports.downloadMerged = async (req, res) => {
     const { _id } = req.query;
-
+    const tr = await Transaction.findById(_id).populate("list", "name");
     const fileName = "Merge.pdf";
-    const path = `./uploads/${_id}/`;
-    const files = fs.readdirSync(path);
+    const path = `./uploads/${tr.list.name}/${_id}/`;
 
     try {
+        const files = fs.readdirSync(path);
         const mergedPDF = await PDFDocument.create();
         for (const file of files) {
             try {

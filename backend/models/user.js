@@ -34,13 +34,12 @@ userSchema.virtual('member', {
     foreignField: 'email',
 })
 
-userSchema.pre('save', function (next) {
+userSchema.pre('save', { document: true, query: false }, async function (next) {
     if (this.isModified('password')) {
-        bcrypt.hash(this.password, 8, (err, hash) => {
-            if (err) return next(err);
-            this.password = hash;
-            next();
-        });
+        const hash = await bcrypt.hashSync(this.password, 8);
+        this.password = hash;
+        next();
+        return;
     }
     next()
 });

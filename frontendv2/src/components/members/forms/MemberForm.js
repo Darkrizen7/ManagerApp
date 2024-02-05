@@ -58,7 +58,7 @@ const MemberForm = (props) => {
             </div>
             <div className="inputs">
                 <div className="input">
-                    <input {...register("support")} placeholder="Email" type="checkbox" />
+                    Soutient : <input {...register("support")} placeholder="Email" type="checkbox" />
                 </div>
             </div>
             <div className="submit-container">

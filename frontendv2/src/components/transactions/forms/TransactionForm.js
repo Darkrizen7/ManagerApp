@@ -7,9 +7,11 @@ const TransactionForm = (props) => {
 
     const { register, handleSubmit, watch, control, formState: { errors } } = useForm({
         defaultValues: {
-            ...props.transaction
+            ...props.transaction,
+            date: props.transaction?.date ? new Date(props.transaction.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
         }
     });
+
     const invoiceInputs = {
         amount_ht: {
             label: "Montant HT",

@@ -81,15 +81,15 @@ ACCESS.listRoles.RCorpo = {
         readOne: true,
     },
     members: {
-        create: false,
-        delete: false,
+        create: true,
+        delete: true,
         update: true,
         read: true,
     },
     transactions: {
         create: true,
         delete: false,
-        deleteNonApproved: false,
+        deleteNonApproved: true,
         update: false,
         read: true,
         approve: false,

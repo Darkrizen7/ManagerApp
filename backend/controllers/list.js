@@ -34,18 +34,33 @@ exports.remove = async (req, res) => {
     } catch (e) { return JSONErr(res, e); }
 }
 
+exports.update = async (req, res) => {
+    const { _id, name, pre_name, campagne } = req.body;
+    const accessAllowed = await hasAccess(req, "lists.update")
+    if (!accessAllowed) return JSONErr(res, tl("unauthorized_access"))
+    try {
+        const list = await List.findByIdAndUpdate(_id, {
+            $set: {
+                pre_name, name, campagne
+            }
+        }, { new: true });
+        const newList = await List.findById(_id).populate("members").populate("transactions").exec();
+        res.json({ success: true, list: newList })
+    } catch (e) { return JSONErr(res, e); }
+}
 // Get All lists
 getAll = async (req, res) => {
     const accessAllowed = await hasAccess(req, "lists.read")
     if (!accessAllowed) return JSONErr(res, tl("unauthorized_access"))
 
-    const lists = await List.find({}).populate("members").exec();
+    const lists = await List.find({}).populate("members").populate("transactions").exec();
+
     res.json({ success: true, lists });
 };
 
 // Get One list by name
 exports.get = async (req, res) => {
-    const { _id } = req.query
+    const { _id, noPopulate } = req.query
     if (!_id) {
         getAll(req, res);
         return;
@@ -60,7 +75,7 @@ exports.get = async (req, res) => {
         const list = await List.findById({ _id });
         if (!list) return JSONErr(res, tl("list_not_found"))
 
-        await list.fullPopulate();
+        if (!noPopulate) await list.fullPopulate();
         res.json({ success: true, list });
     } catch (e) { return JSONErr(res, e) }
 };

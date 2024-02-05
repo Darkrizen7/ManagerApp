@@ -1,8 +1,6 @@
 import {
-    Column,
     Table as ReactTable,
     useReactTable,
-    ColumnFiltersState,
     getCoreRowModel,
     getFilteredRowModel,
     getFacetedRowModel,
@@ -12,7 +10,7 @@ import {
     getSortedRowModel,
     flexRender,
 } from '@tanstack/react-table'
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { fuzzyFilter, booleanFilter } from 'lib/tables';
 import { Filter, DebouncedInput } from 'components';
@@ -25,6 +23,11 @@ const Table = (props) => {
     const table = useReactTable({
         data,
         columns,
+        initialState: {
+            pagination: {
+                pageSize: props.showItem ? props.showItem : 10,
+            }
+        },
         filterFns: {
             fuzzy: fuzzyFilter,
             bool: booleanFilter,
@@ -79,7 +82,7 @@ const Table = (props) => {
                             <tr key={row.id}>
                                 {row.getVisibleCells().map(cell => {
                                     return (
-                                        <td key={cell.id}>
+                                        <td key={cell.id} onClick={() => { cell.column.columnDef.onClick?.(cell) }}>
                                             {flexRender(
                                                 cell.column.columnDef.cell,
                                                 cell.getContext()

@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 const Transaction = require('./transaction')
 
 const listSchema = new mongoose.Schema({
+    pre_name: {
+        type: String,
+        required: false,
+        unique: true
+    },
     name: {
         type: String,
         required: true,

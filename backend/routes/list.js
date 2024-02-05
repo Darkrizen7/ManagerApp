@@ -6,6 +6,7 @@ const {
     getAll,
     get,
     getForUser,
+    update,
     create,
     remove,
 } = require('../controllers/list');
@@ -17,6 +18,7 @@ const {
 // Listes
 router.get('/', isAuth, get);
 router.post('', isAuth, create);
+router.put('', isAuth, update);
 router.delete('/', isAuth, remove);
 
 module.exports = router;

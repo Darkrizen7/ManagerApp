@@ -1,10 +1,10 @@
-import { Transaction } from "interfaces";
+import { ITransaction } from "interfaces";
 
-class Invoice extends Transaction {
+class IInvoice extends ITransaction {
     amount_HT: number;
     toReimburse: string;
     RIB: File;
     invoice: File;
     expense_report: File;
 }
-export { Invoice };
+export { IInvoice };

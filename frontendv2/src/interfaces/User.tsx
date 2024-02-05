@@ -1,8 +1,8 @@
-class User {
+class IUser {
     _id: object;
     username: string;
     email: string;
     role: string;
 }
 
-export { User };
+export { IUser };

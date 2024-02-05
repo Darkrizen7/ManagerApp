@@ -8,10 +8,13 @@ import { NavBar } from 'components'
 import { GetMembers } from 'pages/members';
 import { Lists, List } from 'pages/lists';
 import { TransactionsRoute, TransactionRoute } from 'pages/transactions';
+import { Statistics } from 'pages/admin/statistics';
+import { Admin } from 'pages/admin';
 
 import { Home } from 'pages/home';
 import { Login } from 'pages/login';
 import { TestComponent } from 'pages/test';
+
 import { PermProvider } from 'hooks/PermContext';
 
 function App() {
@@ -31,8 +34,11 @@ function App() {
               <Route path="/lists" component={Lists} />
 
               <Route path="/transactions/get/:transactionId" component={TransactionRoute} />
-              <Route path="/transactions/getByList/:list" component={TransactionsRoute} />
+              <Route path="/transactions/getByList/:list_id" component={TransactionsRoute} />
               <Route path="/transactions" component={TransactionsRoute} />
+
+              <Route path="/admin/statistics" component={Statistics} />
+              <Route path="/admin" component={Admin} />
 
               <Route path="/login" component={Login} />
               <Route path="/" component={Home} />

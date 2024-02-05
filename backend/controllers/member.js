@@ -12,11 +12,14 @@ exports.create = async (req, res) => {
     if (!accessAllowed) return JSONErr(res, tl("unauthorized_access"))
 
     try {
-        const listToAdd = await List.findById(list);
+        const listToAdd = await List.findById(list).populate("members");
         if (!listToAdd) return JSONErr(res, tl("list_not_found;") + list)
-
+        const countOff = listToAdd.members.filter((mb) => !mb.support).length;
+        const countSupp = listToAdd.members.filter((mb) => mb.support).length;
+        if ((support === "false" && countOff >= 38) || (support === "true" && countSupp >= 8)) return JSONErr(res, "Limite atteinte");
         const member = await Member({ surname, lastname, student_number, email, support, role, list });
         await member.save();
+        await member.populate("list");
         res.json({ success: true, member });
     } catch (e) { return JSONErr(res, e) }
 }
@@ -37,16 +40,18 @@ exports.remove = async (req, res) => {
 
 //Update a member from a list
 exports.update = async (req, res) => {
-    const { _id, surname, lastname, student_number, email, support, list } = req.body;
+    const { _id, surname, lastname, student_number, email, support, role, list } = req.body;
     const accessAllowed = await hasAccess(req, "members.update", list)
     if (!accessAllowed) return JSONErr(res, tl("unauthorized_access"))
-
+    const otherAccess = await hasAccess(req, "members.update");
+    if (role == "RCorpo" && !otherAccess) return JSONErr(res, "Vous ne pouvez pas changer de respo corpo");
     try {
         const member = await Member.findByIdAndUpdate(_id, {
             $set: {
-                surname, lastname, student_number, email, support
+                surname, lastname, student_number, email, role, support
             }
         }, { new: true });
+        await member.populate("list");
         res.json({ success: true, member });
     } catch (e) { return JSONErr(res, e) }
 }
