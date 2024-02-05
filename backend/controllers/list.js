@@ -6,7 +6,7 @@ const { tl } = require('../utils/translator');
 
 // ------------------------------------- List CRUD ------------------------------------- //
 exports.create = async (req, res) => {
-    const { name, campagne } = req.body;
+    const { name, campagne, pre_name } = req.body;
     const accessAllowed = await hasAccess(req, "lists.create")
     if (!accessAllowed) return JSONErr(res, tl("unauthorized_access"))
 
