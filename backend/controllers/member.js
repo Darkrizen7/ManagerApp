@@ -1,5 +1,6 @@
 const List = require('../models/list');
 const Member = require('../models/member');
+const User = require('../models/user');
 const { tl } = require('../utils/translator');
 const { hasAccess } = require('../lib/access_manager');
 const { JSONErr } = require('../lib/error_manager');
