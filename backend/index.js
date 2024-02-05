@@ -22,7 +22,7 @@ app.use(fileupload({
     createParentPath: true,
 }));
 app.use(cors({
-    origin: 'http://localhost:8000',
+    origin: ['http://5.196.13.247:8000', 'http://5.196.13.247'],
     credentials: true,
     exposedHeaders: ["Content-Type", "Content-Disposition"]
 }));
