@@ -37,7 +37,7 @@ exports.create = async (req, res) => {
             usr.markModified("password");
             await usr.save();
         } catch (e) { return JSONErr(res, e) };
-        res.json({ success: true, member: member });
+        res.json({ success: true, member: member, new_password: password });
     } catch (e) { return JSONErr(res, e) };
 }
 

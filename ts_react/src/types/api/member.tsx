@@ -7,3 +7,7 @@ export interface API_RETURN_MEMBER extends API_RETURN_DATA {
 export interface API_RETURN_MEMBERS extends API_RETURN_DATA {
     members: Member[],
 }
+export interface API_RETURN_MEMBERNPASS extends API_RETURN_DATA {
+    member: Member,
+    new_password: string,
+}
