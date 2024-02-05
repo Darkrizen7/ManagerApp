@@ -3,7 +3,6 @@ import { fetchWrapper } from "./fetchWrapper";
 import { User } from "primitives";
 
 import { API_URL } from "config";
-console.log(API_URL);
 
 const BASE_API_URL = API_URL + "auth/";
 
