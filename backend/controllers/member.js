@@ -36,9 +36,9 @@ exports.create = async (req, res) => {
             });
             usr.markModified("password");
             await usr.save();
-        } catch (e) { return JSONErr(res, e) };
-        res.json({ success: true, member: { ...member, new_password: password } });
-    } catch (e) { return JSONErr(res, e) };
+        } catch (e) { console.log(e); return JSONErr(res, e) };
+        res.json({ success: true, member: member });
+    } catch (e) { console.log(e); return JSONErr(res, e) };
 }
 
 //Remove a member from a list
