@@ -87,6 +87,7 @@ export const ListController = (): React.JSX.Element => {
         setList({
             ...list, members: [data.member, ...list.members],
         })
+        window.confirm("Veuillez noter le mot de passe celui ci ne pourra pas être redonner: " + data.member.new_password + " ce dernier n'est util que pour les trésoriers & respos démarchages");
         return true;
     }
     return (

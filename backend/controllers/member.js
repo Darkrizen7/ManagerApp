@@ -20,8 +20,24 @@ exports.create = async (req, res) => {
         const member = await Member({ surname, lastname, student_number, email, support, role, list });
         await member.save();
         await member.populate("list");
-        res.json({ success: true, member });
-    } catch (e) { return JSONErr(res, e) }
+        var password = "";
+        try {
+            const chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const passwordLength = 12;
+            for (var i = 0; i <= passwordLength; i++) {
+                var randomNumber = Math.floor(Math.random() * chars.length);
+                password += chars.substring(randomNumber, randomNumber + 1);
+            }
+            const usr = new User({
+                username: member.surname + " " + member.lastname,
+                email: member.email,
+                password: password,
+            });
+            usr.markModified("password");
+            await usr.save();
+        } catch (e) { return JSONErr(res, e) };
+        res.json({ success: true, member: { ...member, new_password: password } });
+    } catch (e) { return JSONErr(res, e) };
 }
 
 //Remove a member from a list
