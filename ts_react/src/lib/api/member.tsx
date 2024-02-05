@@ -3,7 +3,7 @@ import { API_RETURN_MEMBER, API_RETURN_MEMBERS } from "types/api";
 import { API_Req } from "./fetchWrapper";
 import { Member } from "primitives";
 
-const API_URL = "http://localhost:3000/";
+import { API_URL } from "config";
 const BASE_API_URL = API_URL + "members/";
 export async function API_CreateMember(member: Member): Promise<API_RETURN<API_RETURN_MEMBER>> {
     return API_Req<API_RETURN_MEMBER>(BASE_API_URL + "", "post", member);

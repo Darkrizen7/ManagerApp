@@ -4,7 +4,7 @@ export * from "./lists.js"
 export * from "./members.js"
 export * from "./transactions"
 
-const API_URL = "http://localhost:3000/";
+const API_URL = "5.196.13.247:3000";
 
 const createFormDataAndURL = (url_path, formData) => {
     const url = new URL(API_URL + url_path);

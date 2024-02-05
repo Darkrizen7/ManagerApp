@@ -3,7 +3,7 @@ import { API_Req } from "./fetchWrapper";
 import { API_RETURN_LIST, API_RETURN_LISTS } from "types";
 import { List } from "primitives";
 
-const API_URL = "http://localhost:3000/";
+import { API_URL } from "config";
 const BASE_API_URL = API_URL + "lists/";
 
 export async function API_GetLists(): Promise<API_RETURN<API_RETURN_LISTS>> {

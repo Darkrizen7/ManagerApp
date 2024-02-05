@@ -2,7 +2,7 @@ import { Transaction } from "primitives";
 import { API_RETURN, API_RETURN_FILE, API_RETURN_TRANSACTION, API_RETURN_TRANSACTIONS } from "types";
 import { API_Req, fetchFile } from "./fetchWrapper";
 
-const API_URL = "http://localhost:3000/";
+import { API_URL } from "config";
 const BASE_API_URL = API_URL + "transactions/";
 
 export async function API_GetTransaction(_id: string | undefined): Promise<API_RETURN<API_RETURN_TRANSACTION>> {

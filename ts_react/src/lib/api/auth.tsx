@@ -2,7 +2,8 @@ import { API_RETURN, API_RETURN_LOGIN, API_RETURN_TOKEN_LOGIN } from "types";
 import { fetchWrapper } from "./fetchWrapper";
 import { User } from "primitives";
 
-const API_URL = "http://localhost:3000/";
+import { API_URL } from "config";
+
 const BASE_API_URL = API_URL + "auth/";
 
 export async function API_Login(userData: User): Promise<API_RETURN<API_RETURN_LOGIN>> {
