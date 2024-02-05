@@ -70,7 +70,7 @@ exports.create = async (req, res) => {
                     } else if (key === "frais") {
                         fileName = toreimburse + "-NdF-" + dateFormat(dateFormatted) + ".pdf";
                     }
-                    const folder = "./uploads/" + transaction.list.name + "/" + transaction._id + "/";
+                    const folder = "./uploads/" + transaction.list._id + "/" + transaction._id + "/";
                     const path = folder + fileName;
                     fs.mkdirSync(folder, { recursive: true })
                     fs.writeFileSync(path, file.data);
@@ -134,7 +134,7 @@ exports.update = async (req, res) => {
                     } else if (key === "frais") {
                         fileName = toreimburse + "-NdF-" + dateFormat(dateFormatted) + ".pdf";
                     }
-                    const folder = "./uploads/" + transaction.list.name + "/" + transaction._id + "/";
+                    const folder = "./uploads/" + transaction.list._id + "/" + transaction._id + "/";
                     const path = folder + fileName;
                     fs.mkdirSync(folder, { recursive: true })
                     fs.writeFileSync(path, file.data);
@@ -168,7 +168,7 @@ exports.approve = async (req, res) => {
 
         await transaction.populate("list", "name _id campagne");
         await transaction.populate("approved_by");
-        const parentFolder = "uploads/" + transaction.list.name + "/" + _id;
+        const parentFolder = "uploads/" + transaction.list._id + "/" + _id;
         if (!fs.existsSync(parentFolder)) {
             fs.mkdirSync(parentFolder, { recursive: true })
         }
@@ -178,7 +178,7 @@ exports.approve = async (req, res) => {
         pdfReturn.text("Nom : " + transaction.name, 10, 50);
         pdfReturn.text("Approuvée par : " + req.user.username, 10, 70);
         pdfReturn.text("Approuvée le : " + dateFormat(Date.now()), 10, 90);
-        pdfReturn.save("uploads/" + transaction.list.name + "/" + _id + "/head.pdf");
+        pdfReturn.save("uploads/" + transaction.list._id + "/" + _id + "/head.pdf");
 
         res.json({ success: true, transaction, });
 
@@ -190,7 +190,7 @@ exports.downloadMerged = async (req, res) => {
     const { _id } = req.query;
     const tr = await Transaction.findById(_id).populate("list", "name");
     const fileName = "Merge.pdf";
-    const path = `./uploads/${tr.list.name}/${_id}/`;
+    const path = `./uploads/${tr.list._id}/${_id}/`;
 
     try {
         const files = fs.readdirSync(path);

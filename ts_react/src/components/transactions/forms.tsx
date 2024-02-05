@@ -9,7 +9,7 @@ type IFormProps = {
     transaction?: Transaction,
 }
 export const TransactionForm = (props: IFormProps): React.JSX.Element => {
-    const { register, handleSubmit, setValue, watch } = useForm({
+    const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
         defaultValues: props.transaction,
     });
     useEffect(() => {
@@ -60,6 +60,7 @@ export const TransactionForm = (props: IFormProps): React.JSX.Element => {
             case "BNP":
                 return (
                     <div className="input">
+                        {errors.proof && <span>Requis</span>}
                         <label>Justificatif ouverture compte</label>
                         <input type="file" {...register("proof", { required: true })} />
                     </div>
@@ -67,6 +68,7 @@ export const TransactionForm = (props: IFormProps): React.JSX.Element => {
             case "Intérim":
                 return (
                     <div className="input">
+                        {errors.contract && <span>Requis</span>}
                         <label>Contrat d'intérim</label>
                         <input type="file" {...register("contract", { required: true })} />
                     </div>
@@ -74,6 +76,7 @@ export const TransactionForm = (props: IFormProps): React.JSX.Element => {
             case "Sponsoring nature":
                 return (
                     <div className="input">
+                        {errors.contract && <span>Requis</span>}
                         <label>Contrat de Sponsoring</label>
                         <input type="file" {...register("contract", { required: true })} />
                     </div>
@@ -81,6 +84,7 @@ export const TransactionForm = (props: IFormProps): React.JSX.Element => {
             case "Sponsoring Financier":
                 return (
                     <div className="input">
+                        {errors.contract && <span>Requis</span>}
                         <label>Contrat de Sponsoring</label>
                         <input type="file" {...register("contract", { required: true })} />
                     </div>
@@ -90,6 +94,7 @@ export const TransactionForm = (props: IFormProps): React.JSX.Element => {
                     <>
                         {Object.entries(invoiceInputs).map(([key, input]) => (
                             <div key={key} className="input">
+                                {errors[key as ("toreimburse" | "frais" | "RIB" | "facture" | "amount_ht")] && <span>Requis</span>}
                                 <label>{input.label}</label>
                                 <input {...register(key as ("toreimburse" | "frais" | "RIB" | "facture" | "amount_ht"), input.opts)} placeholder={input.placeholder} type={input.type}></input>
                             </div>
