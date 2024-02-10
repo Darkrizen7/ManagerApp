@@ -51,7 +51,7 @@ exports.update = async (req, res) => {
     if (!accessAllowed) return JSONErr(res, tl("unauthorized_access"))
     const otherAccess = await hasAccess(req, "members.update");
     const mb = await Member.findById(_id);
-    if (mb && mb.role !== role && role == "RCorpo" && !otherAccess) return JSONErr(res, "Vous ne pouvez pas modifier les respo corpo");
+    if (mb && mb.role !== role && (mb.role == "RCorpo" || role == "RCorpo") && !otherAccess) return JSONErr(res, "Vous ne pouvez pas modifier les respo corpo");
     const listToAdd = await List.findById(list).populate("members");
     if (!listToAdd) return JSONErr(res, tl("list_not_found;") + list)
     const countOff = listToAdd.members.filter((mb) => !mb.support).length;
