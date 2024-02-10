@@ -107,6 +107,8 @@ exports.toExcel = async (req, res) => {
         { value: "Nom", fontWeight: "bold", },
         { value: "Numéro étudiant", fontWeight: "bold", },
         { value: "Rôle", fontWeight: "bold", },
+        { value: "Liste", fontWeight: "bold", },
+        { value: "Soutient", fontWeight: "bold", },
     ]
     data.push(headerRow);
     members.forEach((mb) => {
@@ -115,7 +117,8 @@ exports.toExcel = async (req, res) => {
             { type: String, value: mb.lastname },
             { type: String, value: mb.student_number },
             { type: String, value: mb.role },
-            { type: String, value: mb.list.name },
+            { type: String, value: mb.list.name + "-" + mb.list.pre_name },
+            { type: Boolean, value: mb.support },
         ])
     })
     await writeXlsxFile(data, {
