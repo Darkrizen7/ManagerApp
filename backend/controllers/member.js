@@ -53,7 +53,7 @@ exports.update = async (req, res) => {
     if (!listToAdd) return JSONErr(res, tl("list_not_found;") + list)
     const countOff = listToAdd.members.filter((mb) => !mb.support).length;
     const countSupp = listToAdd.members.filter((mb) => mb.support).length;
-    if ((support === "false" && countOff >= 2) || (support === "true" && countSupp >= 8)) return JSONErr(res, "Limite atteinte");
+    if ((support === "false" && countOff >= 30) || (support === "true" && countSupp >= 8)) return JSONErr(res, "Limite atteinte");
     try {
         const member = await Member.findByIdAndUpdate(_id, {
             $set: {
