@@ -108,6 +108,7 @@ exports.toExcel = async (req, res) => {
         { value: "Numéro étudiant", fontWeight: "bold", },
         { value: "Rôle", fontWeight: "bold", },
         { value: "Liste", fontWeight: "bold", },
+        { value: "Campagne", fontWeight: "bold", },
         { value: "Soutient", fontWeight: "bold", },
     ]
     data.push(headerRow);
@@ -118,6 +119,7 @@ exports.toExcel = async (req, res) => {
             { type: String, value: mb.student_number },
             { type: String, value: mb.role },
             { type: String, value: mb.list.name + "-" + mb.list.pre_name },
+            { type: String, value: mb.list.campagne },
             { type: Boolean, value: mb.support },
         ])
     })
