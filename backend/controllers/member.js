@@ -118,9 +118,9 @@ exports.toExcel = async (req, res) => {
             { type: String, value: mb.list.name },
         ])
     })
-    const output = fs.createWriteStream(filePath);
-    const stream = await writeXlsxFile(data);
-    stream.pipe(output);
+    await writeXlsxFile(data, {
+        filePath
+    })
 
     if (!fs.existsSync(filePath)) {
         return res.status(404).send('File not found');
