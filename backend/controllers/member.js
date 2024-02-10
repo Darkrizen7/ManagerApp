@@ -10,13 +10,15 @@ exports.create = async (req, res) => {
     const { surname, lastname, student_number, email, support, role, list } = req.body
     const accessAllowed = await hasAccess(req, "members.create", list)
     if (!accessAllowed) return JSONErr(res, tl("unauthorized_access"))
+    const otherAccess = await hasAccess(req, "members.update");
+    if (role == "RCorpo" && !otherAccess) return JSONErr(res, "Vous ne pouvez pas changer de respo corpo");
 
     try {
         const listToAdd = await List.findById(list).populate("members");
         if (!listToAdd) return JSONErr(res, tl("list_not_found;") + list)
         const countOff = listToAdd.members.filter((mb) => !mb.support).length;
         const countSupp = listToAdd.members.filter((mb) => mb.support).length;
-        if ((support === "false" && countOff >= 38) || (support === "true" && countSupp >= 8)) return JSONErr(res, "Limite atteinte");
+        if ((support === "false" && countOff >= 30) || (support === "true" && countSupp >= 8)) return JSONErr(res, "Limite atteinte");
         const member = await Member({ surname, lastname, student_number, email, support, role, list });
         await member.save();
         await member.populate("list");
@@ -47,6 +49,11 @@ exports.update = async (req, res) => {
     if (!accessAllowed) return JSONErr(res, tl("unauthorized_access"))
     const otherAccess = await hasAccess(req, "members.update");
     if (role == "RCorpo" && !otherAccess) return JSONErr(res, "Vous ne pouvez pas changer de respo corpo");
+    const listToAdd = await List.findById(list).populate("members");
+    if (!listToAdd) return JSONErr(res, tl("list_not_found;") + list)
+    const countOff = listToAdd.members.filter((mb) => !mb.support).length;
+    const countSupp = listToAdd.members.filter((mb) => mb.support).length;
+    if ((support === "false" && countOff >= 30) || (support === "true" && countSupp >= 8)) return JSONErr(res, "Limite atteinte");
     try {
         const member = await Member.findByIdAndUpdate(_id, {
             $set: {
