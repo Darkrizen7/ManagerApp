@@ -93,7 +93,7 @@ exports.toExcel = async (req, res) => {
     var members;
     var fileName = "TotalToDownload.xlsx";
     if (_id) {
-        const list = await List.findById(_id).populate("members").populate("members.list");
+        const list = await List.findById(_id);
         members = await Member.find({ list: _id }).populate("list");
         fileName = `${list.name}-${list.pre_name}.xlsx`;
     } else {
