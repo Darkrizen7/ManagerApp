@@ -111,11 +111,11 @@ exports.toExcel = async (req, res) => {
     data.push(headerRow);
     members.forEach((mb) => {
         data.push([
-            { type: "string", value: mb.surname },
-            { type: "string", value: mb.lastname },
-            { type: "string", value: mb.student_number },
-            { type: "string", value: mb.role },
-            { type: "string", value: mb.list.name },
+            { type: String, value: mb.surname },
+            { type: String, value: mb.lastname },
+            { type: String, value: mb.student_number },
+            { type: String, value: mb.role },
+            { type: String, value: mb.list.name },
         ])
     })
     const output = fs.createWriteStream(filePath);
