@@ -97,7 +97,7 @@ exports.toExcel = async (req, res) => {
         members = await Member.find({ list: _id }).populate("list");
         fileName = `${list.name}-${list.pre_name}.xlsx`;
     } else {
-        members = await Member.find().pupulate("list");
+        members = await Member.find().populate("list");
     }
     const filePath = fileName;
 
