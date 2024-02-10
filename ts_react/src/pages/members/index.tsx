@@ -1,6 +1,6 @@
 import { MembersTable } from "components";
 import { usePerm } from "hooks";
-import { API_EditMember, API_GetMembers, API_RemoveMember } from "lib";
+import { API_DownloadMembers, API_EditMember, API_GetMembers, API_RemoveMember } from "lib";
 import { Member } from "primitives";
 import { useEffect, useState } from "react";
 
@@ -37,14 +37,22 @@ export const MembersController = (): React.JSX.Element => {
     //     })
     //     return true;
     // }
+    const handleDownload = async (): Promise<boolean> => {
+        const { error } = await API_DownloadMembers();
+        if (!error) return false;
+        return true
+    }
     return (
         <>
             {hasAccess("members.read") &&
-                <MembersTable members={members}
-                    onMemberEdited={onMemberEdited}
-                    onMemberDeleted={onMemberDeleted}
-                    accessEdit={hasAccess("members.update")}
-                    accessDelete={hasAccess("members.delete")} />
+                <>
+                    <button onClick={handleDownload}>Télécharger</button>
+                    <MembersTable members={members}
+                        onMemberEdited={onMemberEdited}
+                        onMemberDeleted={onMemberDeleted}
+                        accessEdit={hasAccess("members.update")}
+                        accessDelete={hasAccess("members.delete")} />
+                </>
             }
         </>
     )
