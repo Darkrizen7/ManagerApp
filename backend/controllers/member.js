@@ -127,7 +127,7 @@ exports.toExcel = async (req, res) => {
     }
 
     res.set('Content-Disposition', `filename="${fileName}"`);
-    res.set('Content-Type', 'application/pdf');
+    res.set('Content-Type', 'application/xlsx');
 
     const fileStream = fs.createReadStream(filePath);
     fileStream.pipe(res);
