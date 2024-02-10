@@ -21,7 +21,7 @@ export async function API_GetMembers(): Promise<API_RETURN<API_RETURN_MEMBERS>> 
     return API_Req<API_RETURN_MEMBERS>(BASE_API_URL, "get");
 }
 export async function API_DownloadMembers(list?: List): Promise<API_RETURN<API_RETURN_FILE>> {
-    const url = new URL(BASE_API_URL + "download");
+    const url = new URL(BASE_API_URL + "excel");
     if (list) url.searchParams.append("_id", list._id);
     const { error } = await fetchFile(url);
     return { error }
