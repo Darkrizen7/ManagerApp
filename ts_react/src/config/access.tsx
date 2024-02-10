@@ -72,8 +72,9 @@ ACCESS.listRoles.user = {
     transactions: {
         create: false,
         delete: false,
+        deleteNonApproved: false,
         update: false,
-        read: true,
+        read: false,
         approve: false,
     },
 }
@@ -92,11 +93,11 @@ ACCESS.listRoles.RCorpo = {
         read: true,
     },
     transactions: {
-        create: true,
+        create: false,
         delete: false,
-        deleteNonApproved: true,
+        deleteNonApproved: false,
         update: false,
-        read: true,
+        read: false,
         approve: false,
     },
 }
@@ -117,11 +118,11 @@ ACCESS.listRoles.Treso = {
 
     },
     transactions: {
-        create: true,
+        create: false,
         delete: false,
         deleteNonApproved: false,
         update: false,
-        read: true,
+        read: false,
         approve: false,
     },
 }
@@ -141,11 +142,11 @@ ACCESS.listRoles.RDem = {
         read: true,
     },
     transactions: {
-        create: true,
+        create: false,
         delete: false,
         deleteNonApproved: false,
         update: false,
-        read: true,
+        read: false,
         approve: false,
     },
 }

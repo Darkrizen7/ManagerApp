@@ -1,6 +1,5 @@
 const List = require('../models/list');
 const Member = require('../models/member');
-const User = require('../models/user');
 const { tl } = require('../utils/translator');
 const { hasAccess } = require('../lib/access_manager');
 const { JSONErr } = require('../lib/error_manager');
@@ -21,23 +20,9 @@ exports.create = async (req, res) => {
         const member = await Member({ surname, lastname, student_number, email, support, role, list });
         await member.save();
         await member.populate("list");
-        var password = "";
-        try {
-            const chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            const passwordLength = 12;
-            for (var i = 0; i <= passwordLength; i++) {
-                var randomNumber = Math.floor(Math.random() * chars.length);
-                password += chars.substring(randomNumber, randomNumber + 1);
-            }
-            const usr = new User({
-                username: member.surname + " " + member.lastname,
-                email: member.email,
-                password: password,
-            });
-            usr.markModified("password");
-            await usr.save();
-        } catch (e) { return JSONErr(res, e) };
-        res.json({ success: true, member: member, new_password: password });
+        // const { s, e, password } = await member.createUser();
+        // res.json({ success: true, member: member, new_password: password });
+        res.json({ success: true, member: member });
     } catch (e) { return JSONErr(res, e) };
 }
 

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const User = require('./user');
 const memberSchema = new mongoose.Schema({
     surname: {
         type: String,
@@ -30,5 +31,24 @@ const memberSchema = new mongoose.Schema({
 }, {
     strict: false,
 });
+memberSchema.methods.createUser = async () => {
+    var password = "";
+    const chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const passwordLength = 12;
+    for (var i = 0; i <= passwordLength; i++) {
+        var randomNumber = Math.floor(Math.random() * chars.length);
+        password += chars.substring(randomNumber, randomNumber + 1);
+    }
+    try {
 
+        const usr = new User({
+            username: this.surname + " " + this.lastname,
+            email: this.email,
+            password: password,
+        });
+        usr.markModified("password");
+        await usr.save();
+    } catch (e) { return { success: false, e } };
+    return { success: true, password };
+}
 module.exports = mongoose.model('Member', memberSchema)
