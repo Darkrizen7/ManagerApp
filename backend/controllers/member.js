@@ -4,7 +4,7 @@ const { tl } = require('../utils/translator');
 const { hasAccess } = require('../lib/access_manager');
 const { JSONErr } = require('../lib/error_manager');
 
-
+const fs = require("fs");
 const writeXlsxFile = require('write-excel-file/node')
 
 // ------------------------------------- Member CRUD ------------------------------------- //
