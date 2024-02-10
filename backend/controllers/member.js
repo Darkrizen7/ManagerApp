@@ -4,6 +4,9 @@ const { tl } = require('../utils/translator');
 const { hasAccess } = require('../lib/access_manager');
 const { JSONErr } = require('../lib/error_manager');
 
+
+const writeXlsxFile = require('write-excel-file/node')
+
 // ------------------------------------- Member CRUD ------------------------------------- //
 //Add a member to a list
 exports.create = async (req, res) => {
@@ -83,4 +86,49 @@ exports.getForUser = async (req, res) => {
         if (!member) return JSONErr(res, tl("member_not_found"));
         res.json({ success: true, member });
     } catch (e) { return JSONErr(res, e) }
+}
+
+exports.toExcel = async (req, res) => {
+    const { _id } = req.query;
+    var members;
+    var fileName = "TotalToDownload.xlsx";
+    if (_id) {
+        const list = await List.findById(_id).populate("members").populate("members.list");
+        members = await Member.find({ list: _id }).populate("list");
+        fileName = `${list.name}-${list.pre_name}.xlsx`;
+    } else {
+        members = await Member.find().pupulate("list");
+    }
+    const filePath = fileName;
+
+    const data = [];
+    const headerRow = [
+        { value: "Prénom", fontWeight: "bold", },
+        { value: "Nom", fontWeight: "bold", },
+        { value: "Numéro étudiant", fontWeight: "bold", },
+        { value: "Rôle", fontWeight: "bold", },
+    ]
+    data.push(headerRow);
+    members.forEach((mb) => {
+        data.push([
+            { type: "string", value: mb.surname },
+            { type: "string", value: mb.lastname },
+            { type: "string", value: mb.student_number },
+            { type: "string", value: mb.role },
+            { type: "string", value: mb.list.name },
+        ])
+    })
+    const output = fs.createWriteStream(filePath);
+    const stream = await writeXlsxFile(data);
+    stream.pipe(output);
+
+    if (!fs.existsSync(filePath)) {
+        return res.status(404).send('File not found');
+    }
+
+    res.set('Content-Disposition', `filename="${fileName}"`);
+    res.set('Content-Type', 'application/pdf');
+
+    const fileStream = fs.createReadStream(filePath);
+    fileStream.pipe(res);
 }

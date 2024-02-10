@@ -8,6 +8,7 @@ const {
     update,
     get,
     getForUser,
+    toExcel,
 } = require('../controllers/member');
 
 const {
@@ -23,6 +24,8 @@ router.get('/', isAuth, get);
 router.post('/', isAuth, validateMember, memberValidation, create);
 router.put('/', isAuth, validateMember, memberValidation, update);
 router.delete('/', isAuth, remove);
+
+router.get('/excel', isAuth, toExcel);
 
 router.get('/user', isAuth, getForUser);
 module.exports = router;

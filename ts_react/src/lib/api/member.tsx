@@ -1,7 +1,7 @@
 import { API_RETURN } from "types";
-import { API_RETURN_MEMBER, API_RETURN_MEMBERNPASS, API_RETURN_MEMBERS } from "types/api";
-import { API_Req } from "./fetchWrapper";
-import { Member } from "primitives";
+import { API_RETURN_FILE, API_RETURN_MEMBER, API_RETURN_MEMBERNPASS, API_RETURN_MEMBERS } from "types/api";
+import { API_Req, fetchFile } from "./fetchWrapper";
+import { List, Member } from "primitives";
 
 import { API_URL } from "config";
 const BASE_API_URL = API_URL + "members/";
@@ -19,4 +19,10 @@ export async function API_GetMemberForCurrentUser(): Promise<API_RETURN<API_RETU
 }
 export async function API_GetMembers(): Promise<API_RETURN<API_RETURN_MEMBERS>> {
     return API_Req<API_RETURN_MEMBERS>(BASE_API_URL, "get");
+}
+export async function API_DownloadMembers(list?: List): Promise<API_RETURN<API_RETURN_FILE>> {
+    const url = new URL(BASE_API_URL + "download");
+    if (list) url.searchParams.append("_id", list._id);
+    const { error } = await fetchFile(url);
+    return { error }
 }

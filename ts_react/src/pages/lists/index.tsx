@@ -1,7 +1,7 @@
 import { ListForm, ListsTable, ViewList } from "components";
 import { usePerm } from "hooks";
 import { API_CreateMember, API_EditMember, API_RemoveMember } from "lib";
-import { API_CreateList, API_DeleteList, API_GetList, API_GetLists, API_UpdateList } from "lib/api";
+import { API_CreateList, API_DeleteList, API_DownloadMembers, API_GetList, API_GetLists, API_UpdateList } from "lib/api";
 import { List, Member } from "primitives";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -90,13 +90,21 @@ export const ListController = (): React.JSX.Element => {
         // window.confirm("Veuillez noter le mot de passe celui ci ne pourra pas être redonner: " + data.new_password + " NB: que pour les trésoriers & respos démarchages");
         return true;
     }
+    const handleDownload = async (): Promise<boolean> => {
+        const { error } = await API_DownloadMembers(list);
+        if (!error) return false;
+        return true
+    }
     return (
         <>
             {hasAccess("lists.readOne", list._id) &&
-                <ViewList list={list}
-                    onMemberEdited={onMemberEdited}
-                    onMemberDeleted={onMemberDeleted}
-                    onMemberAdded={onMemberAdded} />
+                <>
+                    <button onClick={handleDownload}>Télécharger</button>
+                    <ViewList list={list}
+                        onMemberEdited={onMemberEdited}
+                        onMemberDeleted={onMemberDeleted}
+                        onMemberAdded={onMemberAdded} />
+                </>
             }
         </>
     )
