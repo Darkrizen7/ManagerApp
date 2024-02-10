@@ -27,8 +27,8 @@ export const ViewList = ({ list, onMemberAdded, onMemberDeleted, onMemberEdited 
         }
         <p>{list.members.filter((m: Member) => !m.support).length} / 30 membres officiels</p>
         <p>{list.members.filter((m: Member) => m.support).length} / 8 soutiens</p>
-        <p>Solde : {amountApproved}€</p>
-        <p>Solde prévisionnel (non approuvé) : {amountNonApproved}€</p>
+        {/* <p>Solde : {amountApproved}€</p> */}
+        {/* <p>Solde prévisionnel (non approuvé) : {amountNonApproved}€</p> */}
 
         {hasAccess("members.read", list._id) &&
             <MembersTable members={list.members}
