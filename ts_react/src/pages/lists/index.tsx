@@ -12,7 +12,6 @@ export const ListsController = (): React.JSX.Element => {
     useEffect(() => {
         (async () => {
             const { data, error } = await API_GetLists();
-            console.log(data, error);
             if (error || !data) { return; }
             setLists(data.lists);
         })()
