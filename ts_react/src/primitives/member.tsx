@@ -9,6 +9,7 @@ export class Member {
     public email: string = "";
     public student_number: string = "0000";
     public new_password: string | null = "";
+    public phone: string = "";
     public role: ("" | "RCorpo" | "RDem" | "Treso" | "Hygiène" | "Comm" | "RSE") = "";
     constructor(data: Partial<Member>) {
         Object.assign(this, data);

@@ -25,6 +25,7 @@ export const MembersTable = ({ members, onMemberEdited, onMemberDeleted, accessE
                 { accessorKey: 'list.name', header: 'Liste' },
                 { accessorKey: 'student_number', header: 'Numéro étudiant' },
                 { accessorKey: 'email', header: "Email" },
+                { accessorKey: 'phone', header: "Tél" },
                 { accessorKey: 'support', header: "Soutien", cell: (info: { getValue: () => boolean }) => (info.getValue() ? "Oui" : "Non"), filterFn: 'bool' },
                 { accessorKey: 'role', header: "Rôle" },
             ],

@@ -20,6 +20,7 @@ export const MemberForm = (props: IFormProps): React.JSX.Element => {
         setValue("lastname", props.member.lastname);
         setValue("email", props.member.email);
         setValue("student_number", props.member.student_number);
+        setValue("phone", props.member.phone);
         setValue("support", props.member.support);
         setValue("role", props.member.role);
     }, [props.member, setValue])
@@ -40,6 +41,9 @@ export const MemberForm = (props: IFormProps): React.JSX.Element => {
                 </div>
                 <div className="input">
                     <input {...register("student_number")} placeholder="Numéro étudiant" type="number" />
+                </div>
+                <div className="input">
+                    <input {...register("phone")} placeholder="Téléphone" type="tel" />
                 </div>
                 <div className="input">
                     <label>Soutient :</label>

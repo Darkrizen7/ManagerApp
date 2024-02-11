@@ -21,6 +21,10 @@ const memberSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    phone: {
+        type: String,
+        default: "",
+    },
     role: {
         type: String,
     },

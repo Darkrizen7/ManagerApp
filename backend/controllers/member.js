@@ -10,7 +10,7 @@ const writeXlsxFile = require('write-excel-file/node')
 // ------------------------------------- Member CRUD ------------------------------------- //
 //Add a member to a list
 exports.create = async (req, res) => {
-    const { surname, lastname, student_number, email, support, role, list } = req.body
+    const { surname, lastname, student_number, email, support, role, list, phone } = req.body
     const accessAllowed = await hasAccess(req, "members.create", list)
     if (!accessAllowed) return JSONErr(res, tl("unauthorized_access"))
     const otherAccess = await hasAccess(req, "members.update");
@@ -21,7 +21,7 @@ exports.create = async (req, res) => {
         const countOff = listToAdd.members.filter((mb) => !mb.support).length;
         const countSupp = listToAdd.members.filter((mb) => mb.support).length;
         if ((support === "false" && countOff >= 30) || (support === "true" && countSupp >= 8)) return JSONErr(res, "Limite atteinte");
-        const member = await Member({ surname, lastname, student_number, email, support, role, list });
+        const member = await Member({ surname, lastname, student_number, email, support, role, list, phone });
         await member.save();
         await member.populate("list");
         // const { s, e, password } = await member.createUser();
@@ -46,7 +46,7 @@ exports.remove = async (req, res) => {
 
 //Update a member from a list
 exports.update = async (req, res) => {
-    const { _id, surname, lastname, student_number, email, support, role, list } = req.body;
+    const { _id, surname, lastname, student_number, email, support, role, list, phone } = req.body;
     const accessAllowed = await hasAccess(req, "members.update", list)
     if (!accessAllowed) return JSONErr(res, tl("unauthorized_access"))
     const otherAccess = await hasAccess(req, "members.update");
@@ -60,7 +60,7 @@ exports.update = async (req, res) => {
     try {
         const member = await Member.findByIdAndUpdate(_id, {
             $set: {
-                surname, lastname, student_number, email, role, support
+                surname, lastname, student_number, email, role, support, phone
             }
         }, { new: true });
         await member.populate("list");
